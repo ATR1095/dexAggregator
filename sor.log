@@ -1,0 +1,128 @@
+[2026-04-10T12:47:20Z INFO  SOR] SOR gRPC Server listening on 127.0.0.1:50052
+[2026-04-10T12:47:20Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:47:20Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:47:20Z INFO  SOR::quoter] Quoter: Requesting quote for So11111111111111111111111111111111111111112 -> EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v (amount: 1000000000)
+[2026-04-10T12:47:20Z INFO  SOR::graph] Graph: Successfully built graph with 103 edges
+[2026-04-10T12:47:20Z INFO  SOR::graph] Graph: Searching routes from So11111111111111111111111111111111111111112 to EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v (nodes: 101)
+[2026-04-10T12:47:20Z INFO  SOR::graph] Graph: Search complete. Found 7 routes
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 58oQ3UXu2Qn2EEyR3zH8e8c89GZ9SgqXJ5H4JzG9t resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool FRhB8L7Y9Qq41qZXYLtC2nw8An1RJfLLxRF2x9RwLLMo resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool 7XawhbbxtsRcQA8KTkHT9f9nc6d69UwqCDh6U5EEbEmX resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z WARN  SOR::quoter] Quoter: Simulating pool AVs9TA4nWDzfPJE9gGVNJMVhcQy3V9PGazuz33BfG2RA resulted in 0 output (reserves: 0/0). Check Price Oracle sync.
+[2026-04-10T12:47:20Z INFO  SOR] Quote: SOL -> USDC (amount_in=1000000000, human_in=1)
+[2026-04-10T12:47:35Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:47:35Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:47:50Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:47:50Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:48:05Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:48:05Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:48:20Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:48:20Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:48:35Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:48:35Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:48:50Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:48:50Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:49:05Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:49:05Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:49:20Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:49:20Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:49:35Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:49:35Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:49:50Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:49:50Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:50:05Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:50:05Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)
+[2026-04-10T12:50:20Z INFO  SOR] SOR: Discovered 103 pools from Oracle
+[2026-04-10T12:50:20Z INFO  SOR] SOR: Pool cache refresh complete (103 pools in cache)

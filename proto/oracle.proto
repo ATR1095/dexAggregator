@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package oracle;
+option go_package = "priceOracleService/proto";
+
+service PriceOracle {
+  rpc GetPoolReserves (PoolRequest) returns (PoolUpdate);
+  rpc GetMonitoredPools (Empty) returns (PoolList);
+}
+
+message Empty {}
+
+message PoolList {
+  repeated string pool_ids = 1;
+}
+
+message PoolRequest {
+    string pool_id = 1;
+}
+
+message StreamRequest {
+    repeated string dex_types = 1; // e.g., ["raydium", "orca"]
+}
+
+message PoolUpdate {
+  string pool_id = 1;
+  string token_a = 2;
+  string token_b = 3;
+  uint64 reserve_a = 4;
+  uint64 reserve_b = 5;
+  uint32 amm_type = 6; // 0 for AMM, 1 for CLMM
+  bytes extra_data = 7; // For CLMM tick bitmaps
+  string symbol_a = 8;
+  string symbol_b = 9;
+  uint32 decimals_a = 10;
+  uint32 decimals_b = 11;
+}
