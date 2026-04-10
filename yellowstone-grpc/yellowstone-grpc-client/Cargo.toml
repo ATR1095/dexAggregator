@@ -1,0 +1,36 @@
+[package]
+name = "yellowstone-grpc-client"
+version = "13.0.0"
+authors = { workspace = true }
+edition = { workspace = true }
+description = "Yellowstone gRPC Geyser Simple Client"
+homepage = { workspace = true }
+repository = { workspace = true }
+license = "Apache-2.0"
+keywords = { workspace = true }
+publish = true
+
+[features]
+account-data-as-bytes = [
+    "yellowstone-grpc-proto/account-data-as-bytes"
+]
+
+[dependencies]
+bytes = { workspace = true }
+futures = { workspace = true }
+hyper-util = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tonic = { workspace = true, features = ["tls-native-roots"] }
+tonic-health = { workspace = true }
+tower = { workspace = true, features = ["util"] }
+
+
+# Yellowstone
+yellowstone-grpc-proto = { workspace = true, features = ["tonic", "tonic-compression"] }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
+
+[lints]
+workspace = true
