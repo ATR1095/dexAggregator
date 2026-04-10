@@ -1,0 +1,138 @@
+basePath: /
+definitions:
+  handlers.QuoteRequest:
+    properties:
+      amount:
+        type: string
+      inputToken:
+        type: string
+      outputToken:
+        type: string
+    required:
+    - amount
+    - inputToken
+    - outputToken
+    type: object
+  handlers.SwapRequest:
+    properties:
+      amount:
+        type: string
+      inputToken:
+        type: string
+      outputToken:
+        type: string
+      slippageBps:
+        description: 0 to 10%
+        maximum: 1000
+        minimum: 0
+        type: number
+      userAddress:
+        type: string
+    required:
+    - amount
+    - inputToken
+    - outputToken
+    - userAddress
+    type: object
+  sor.QuoteResponse:
+    properties:
+      input_amount:
+        type: string
+      input_token:
+        type: string
+      output_amount:
+        type: string
+      output_token:
+        type: string
+      path:
+        items:
+          type: string
+        type: array
+      price_impact:
+        type: number
+    type: object
+  sor.SwapResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+      tx_hash:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: API Gateway for the Solana DEX Aggregator.
+  title: DEX Aggregator API Gateway
+  version: "1.0"
+paths:
+  /v1/quote:
+    post:
+      consumes:
+      - application/json
+      description: Find the best route and output amount for a swap
+      parameters:
+      - description: Quote Request
+        in: body
+        name: quote
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.QuoteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/sor.QuoteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a token swap quote
+      tags:
+      - swap
+  /v1/swap:
+    post:
+      consumes:
+      - application/json
+      description: Initiate a swap transaction via the SOR
+      parameters:
+      - description: Swap Request
+        in: body
+        name: swap
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.SwapRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/sor.SwapResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Execute a token swap
+      tags:
+      - swap
+swagger: "2.0"

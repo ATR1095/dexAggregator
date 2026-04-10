@@ -1,0 +1,10 @@
+nohup: ignoring input
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /v1/quote                 --> github.com/dexAggregator/APIGateway/internal/handlers.QuoteHandler.func1 (4 handlers)
+[GIN-debug] POST   /v1/swap                  --> github.com/dexAggregator/APIGateway/internal/handlers.SwapHandler.func1 (4 handlers)
+[GIN-debug] GET    /health                   --> main.main.func1 (3 handlers)
+[GIN-debug] GET    /api                      --> main.main.func2 (3 handlers)
+[GIN-debug] GET    /api/*any                 --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (3 handlers)

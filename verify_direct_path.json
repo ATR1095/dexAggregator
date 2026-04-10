@@ -1,0 +1,1 @@
+{"details":"rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp 127.0.0.1:50052: connect: connection refused\"","error":"failed to get quote from SOR"}

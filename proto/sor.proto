@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package sor;
+
+option go_package = "github.com/dexAggregator/APIGateway/proto/sor";
+
+service SORService {
+  rpc Quote (QuoteRequest) returns (QuoteResponse);
+  rpc Swap (SwapRequest) returns (SwapResponse);
+}
+
+message QuoteRequest {
+  string input_token = 1;
+  string output_token = 2;
+  string amount = 3;
+}
+
+message QuoteResponse {
+  string input_token = 1;
+  string output_token = 2;
+  string input_amount = 3;
+  string output_amount = 4;
+  repeated string path = 5; // Pool IDs
+  double price_impact = 6;
+  repeated string token_path = 7; // e.g., ["SOL", "USDC", "USDT"]
+  string human_input_amount = 8;
+  string human_output_amount = 9;
+}
+
+message SwapRequest {
+  string input_token = 1;
+  string output_token = 2;
+  string amount = 3;
+  string user_address = 4;
+  double slippage_bps = 5;
+}
+
+message SwapResponse {
+  string tx_hash = 1;
+  string status = 2;
+  string message = 3;
+  repeated string route = 4; // Token path
+  string output_amount = 5;
+  string human_output_amount = 6;
+}
