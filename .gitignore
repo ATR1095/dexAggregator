@@ -1,1 +1,28 @@
 /target
+
+# Binaries
+price-oracle
+price-oracle-service
+price-oracle-test
+priceOracleServ
+priceOracleService
+
+# Logs
+*.log
+
+# Large data files
+raydium_pools.json
+# Keep some metadata but ignore large datasets
+pool_info.json
+
+# Environment
+.env
+
+# Workspace files
+DexAggregator.code-workspace
+.vscode/
+
+# Build / Dependency artifacts
+node_modules/
+dist/
+build/

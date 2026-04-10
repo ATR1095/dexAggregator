@@ -1,0 +1,629 @@
+use {
+    crate::plugin::filter::limits::FilterLimits,
+    agave_geyser_plugin_interface::geyser_plugin_interface::{
+        GeyserPluginError, Result as PluginResult,
+    },
+    bytesize::ByteSize,
+    serde::{de, Deserialize, Deserializer},
+    std::{
+        collections::HashSet,
+        fmt,
+        fs::read_to_string,
+        net::SocketAddr,
+        path::{Path, PathBuf},
+        str::FromStr,
+        time::Duration,
+    },
+    tokio::sync::Semaphore,
+    tonic::codec::CompressionEncoding,
+};
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Config {
+    pub libpath: String,
+    #[serde(default)]
+    pub log: ConfigLog,
+    #[serde(default)]
+    pub tokio: ConfigTokio,
+    pub grpc: ConfigGrpc,
+    #[serde(default)]
+    pub prometheus: Option<ConfigPrometheus>,
+    /// Collect client filters, processed slot and make it available on prometheus port `/debug_clients`
+    #[serde(default)]
+    pub debug_clients_http: bool,
+}
+
+impl Config {
+    fn load_from_str(config: &str) -> PluginResult<Self> {
+        serde_json::from_str(config).map_err(|error| GeyserPluginError::ConfigFileReadError {
+            msg: error.to_string(),
+        })
+    }
+
+    pub fn load_from_file<P: AsRef<Path>>(file: P) -> PluginResult<Self> {
+        let config = read_to_string(file).map_err(GeyserPluginError::ConfigFileOpenError)?;
+        Self::load_from_str(&config)
+    }
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ConfigLog {
+    /// Log level.
+    #[serde(default = "ConfigLog::default_level")]
+    pub level: String,
+}
+
+impl Default for ConfigLog {
+    fn default() -> Self {
+        Self {
+            level: Self::default_level(),
+        }
+    }
+}
+
+impl ConfigLog {
+    fn default_level() -> String {
+        "info".to_owned()
+    }
+}
+
+#[derive(Debug, Clone, Default, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ConfigTokio {
+    /// Number of worker threads in Tokio runtime
+    #[serde(default)]
+    pub worker_threads: Option<usize>,
+    /// Threads affinity
+    #[serde(default, deserialize_with = "ConfigTokio::deserialize_affinity")]
+    pub affinity: Option<Vec<usize>>,
+}
+
+impl ConfigTokio {
+    fn deserialize_affinity<'de, D>(deserializer: D) -> Result<Option<Vec<usize>>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        match Option::<&str>::deserialize(deserializer)? {
+            Some(taskset) => parse_taskset(taskset).map(Some).map_err(de::Error::custom),
+            None => Ok(None),
+        }
+    }
+}
+
+fn parse_taskset(taskset: &str) -> Result<Vec<usize>, String> {
+    let mut set = HashSet::new();
+    for taskset2 in taskset.split(',') {
+        match taskset2.split_once('-') {
+            Some((start, end)) => {
+                let start: usize = start
+                    .parse()
+                    .map_err(|_error| format!("failed to parse {start:?} from {taskset:?}"))?;
+                let end: usize = end
+                    .parse()
+                    .map_err(|_error| format!("failed to parse {end:?} from {taskset:?}"))?;
+                if start > end {
+                    return Err(format!("invalid interval {taskset2:?} in {taskset:?}"));
+                }
+                for idx in start..=end {
+                    set.insert(idx);
+                }
+            }
+            None => {
+                set.insert(
+                    taskset2.parse().map_err(|_error| {
+                        format!("failed to parse {taskset2:?} from {taskset:?}")
+                    })?,
+                );
+            }
+        }
+    }
+
+    let mut vec = set.into_iter().collect::<Vec<usize>>();
+    vec.sort();
+
+    if let Some(set_max_index) = vec.last().copied() {
+        let max_index = affinity::get_thread_affinity()
+            .map_err(|_err| "failed to get affinity".to_owned())?
+            .into_iter()
+            .max()
+            .unwrap_or(0);
+
+        if set_max_index > max_index {
+            return Err(format!("core index must be in the range [0, {max_index}]"));
+        }
+    }
+
+    Ok(vec)
+}
+
+// Default mode: 0o660 (owner+group read/write)
+const DEFAULT_UNIX_SOCKET_MODE: u32 = 0o660;
+
+#[derive(Debug, Clone)]
+pub enum GrpcAddress {
+    Tcp(SocketAddr),
+    Unix { path: PathBuf, mode: u32 },
+}
+
+#[derive(Debug, Clone)]
+pub struct GrpcAddresses {
+    pub inner: Vec<GrpcAddress>,
+}
+
+impl<'de> Deserialize<'de> for GrpcAddress {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        // Support both string: "unix:///path" and object: {"path": "unix:///path", "mode": 504}
+        #[derive(Deserialize)]
+        #[serde(untagged)]
+        enum RawAddress {
+            String(String),
+            Object {
+                path: String,
+                #[serde(default)]
+                mode: Option<u32>,
+            },
+        }
+
+        match RawAddress::deserialize(deserializer)? {
+            RawAddress::String(s) => s.parse::<GrpcAddress>().map_err(de::Error::custom),
+            RawAddress::Object { path, mode } => {
+                match path.parse::<GrpcAddress>().map_err(de::Error::custom)? {
+                    GrpcAddress::Unix { path, .. } => Ok(GrpcAddress::Unix {
+                        path,
+                        mode: mode.unwrap_or(DEFAULT_UNIX_SOCKET_MODE),
+                    }),
+                    GrpcAddress::Tcp(_) => Err(de::Error::custom(
+                        "mode is only valid for unix:// addresses",
+                    )),
+                }
+            }
+        }
+    }
+}
+
+impl FromStr for GrpcAddress {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if let Some(path) = s.strip_prefix("unix://") {
+            Ok(GrpcAddress::Unix {
+                path: PathBuf::from(path),
+                mode: DEFAULT_UNIX_SOCKET_MODE,
+            })
+        } else {
+            s.parse::<SocketAddr>()
+                .map(GrpcAddress::Tcp)
+                .map_err(|e| e.to_string())
+        }
+    }
+}
+
+impl std::fmt::Display for GrpcAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            GrpcAddress::Tcp(addr) => write!(f, "{addr}"),
+            GrpcAddress::Unix { path, .. } => write!(f, "unix://{}", path.display()),
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for GrpcAddresses {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        use serde::de::{self, SeqAccess, Visitor};
+
+        struct AddressesVisitor;
+
+        impl<'de> Visitor<'de> for AddressesVisitor {
+            type Value = GrpcAddresses;
+
+            fn expecting(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                write!(f, "a string, object, or array of addresses")
+            }
+
+            fn visit_str<E: de::Error>(self, s: &str) -> Result<Self::Value, E> {
+                s.parse::<GrpcAddress>()
+                    .map(|addr| GrpcAddresses { inner: vec![addr] })
+                    .map_err(de::Error::custom)
+            }
+
+            fn visit_map<A: de::MapAccess<'de>>(self, map: A) -> Result<Self::Value, A::Error> {
+                let addr = GrpcAddress::deserialize(de::value::MapAccessDeserializer::new(map))?;
+                Ok(GrpcAddresses { inner: vec![addr] })
+            }
+
+            fn visit_seq<A: SeqAccess<'de>>(self, mut seq: A) -> Result<Self::Value, A::Error> {
+                let mut addrs = Vec::new();
+                while let Some(addr) = seq.next_element::<GrpcAddress>()? {
+                    addrs.push(addr);
+                }
+                if addrs.is_empty() {
+                    return Err(de::Error::custom("at least one address is required"));
+                }
+                Ok(GrpcAddresses { inner: addrs })
+            }
+        }
+
+        deserializer.deserialize_any(AddressesVisitor)
+    }
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ConfigGrpc {
+    /// Multiple addresses of Grpc service.
+    pub address: GrpcAddresses,
+    /// TLS config
+    pub tls_config: Option<ConfigGrpcServerTls>,
+    /// Possible compression options
+    #[serde(default)]
+    pub compression: ConfigGrpcCompression,
+    /// Limits the maximum size of a decoded message, default is 4MiB
+    #[serde(
+        default = "ConfigGrpc::max_decoding_message_size_default",
+        deserialize_with = "deserialize_int_str"
+    )]
+    pub max_decoding_message_size: usize,
+    /// Capacity of the channel used for accounts from snapshot,
+    /// on reaching the limit Sender block validator startup.
+    #[serde(
+        default = "ConfigGrpc::snapshot_plugin_channel_capacity_default",
+        deserialize_with = "deserialize_int_str_maybe"
+    )]
+    pub snapshot_plugin_channel_capacity: Option<usize>,
+    /// Capacity of the client channel, applicable only with snapshot
+    #[serde(
+        default = "ConfigGrpc::snapshot_client_channel_capacity_default",
+        deserialize_with = "deserialize_int_str"
+    )]
+    pub snapshot_client_channel_capacity: usize,
+    /// Capacity of the channel per connection
+    #[serde(
+        default = "ConfigGrpc::channel_capacity_default",
+        deserialize_with = "deserialize_int_str"
+    )]
+    pub channel_capacity: usize,
+    /// Concurrency limit for unary requests
+    #[serde(
+        default = "ConfigGrpc::unary_concurrency_limit_default",
+        deserialize_with = "deserialize_int_str"
+    )]
+    pub unary_concurrency_limit: usize,
+    /// Maximum concurrent subscriptions allowed per subscriber ID.
+    /// Subscribers are identified by the `x-subscription-id` header,
+    /// falling back to the remote IP address.
+    #[serde(
+        default = "ConfigGrpc::subscription_limit_default",
+        deserialize_with = "deserialize_int_str"
+    )]
+    pub subscription_limit: usize,
+    /// When false (default), exceeding the subscription limit only logs
+    /// and emits metrics without rejecting the connection. Set to true
+    /// to start rejecting with RESOURCE_EX2AUSTED.
+    #[serde(default)]
+    pub subscription_limit_enforce: bool,
+    /// Enable/disable unary methods
+    #[serde(default)]
+    pub unary_disabled: bool,
+    /// Limits for possible filters
+    #[serde(default, alias = "filters")]
+    pub filter_limits: FilterLimits,
+    /// x_token to enforce on connections
+    pub x_token: Option<String>,
+    /// Filter name size limit
+    #[serde(default = "ConfigGrpc::default_filter_name_size_limit")]
+    pub filter_name_size_limit: usize,
+    /// Number of cached filter names before doing cleanup
+    #[serde(default = "ConfigGrpc::default_filter_names_size_limit")]
+    pub filter_names_size_limit: usize,
+    /// Cleanup interval once filter names reached `filter_names_size_limit`
+    #[serde(
+        default = "ConfigGrpc::default_filter_names_cleanup_interval",
+        with = "humantime_serde"
+    )]
+    pub filter_names_cleanup_interval: Duration,
+    /// Number of slots stored for re-broadcast (replay)
+    #[serde(
+        default = "ConfigGrpc::default_replay_stored_slots",
+        deserialize_with = "deserialize_int_str"
+    )]
+    pub replay_stored_slots: u64,
+    /// Number of threads for parallel encoding
+    #[serde(
+        default = "ConfigGrpc::encoder_threads_default",
+        deserialize_with = "deserialize_int_str"
+    )]
+    pub encoder_threads: usize,
+    #[serde(default)]
+    pub server_http2_adaptive_window: Option<bool>,
+    #[serde(default, with = "humantime_serde")]
+    pub server_http2_keepalive_interval: Option<Duration>,
+    #[serde(default, with = "humantime_serde")]
+    pub server_http2_keepalive_timeout: Option<Duration>,
+    #[serde(default)]
+    pub server_initial_connection_window_size: Option<u32>,
+    #[serde(default)]
+    pub server_initial_stream_window_size: Option<u32>,
+
+    ///
+    /// After how many bytes a TCP connection should update its traffic metrics for prometheus.
+    /// If not set, it uses the default 64KiB threshold.
+    ///
+    #[serde(default)]
+    pub traffic_reporting_byte_threhsold: Option<ByteSize>,
+}
+
+impl ConfigGrpc {
+    const fn max_decoding_message_size_default() -> usize {
+        4 * 1024 * 1024
+    }
+
+    const fn snapshot_plugin_channel_capacity_default() -> Option<usize> {
+        None
+    }
+
+    const fn snapshot_client_channel_capacity_default() -> usize {
+        50_000_000
+    }
+
+    const fn channel_capacity_default() -> usize {
+        250_000
+    }
+
+    const fn unary_concurrency_limit_default() -> usize {
+        Semaphore::MAX_PERMITS
+    }
+
+    const fn subscription_limit_default() -> usize {
+        1000
+    }
+
+    const fn default_filter_name_size_limit() -> usize {
+        128
+    }
+
+    const fn default_filter_names_size_limit() -> usize {
+        4_096
+    }
+
+    const fn default_filter_names_cleanup_interval() -> Duration {
+        Duration::from_secs(1)
+    }
+
+    const fn default_replay_stored_slots() -> u64 {
+        0
+    }
+
+    const fn encoder_threads_default() -> usize {
+        4
+    }
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ConfigGrpcServerTls {
+    pub cert_path: String,
+    pub key_path: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ConfigGrpcCompression {
+    #[serde(
+        deserialize_with = "ConfigGrpcCompression::deserialize_compression",
+        default = "ConfigGrpcCompression::default_compression"
+    )]
+    pub accept: Vec<CompressionEncoding>,
+    #[serde(
+        deserialize_with = "ConfigGrpcCompression::deserialize_compression",
+        default = "ConfigGrpcCompression::default_compression"
+    )]
+    pub send: Vec<CompressionEncoding>,
+}
+
+impl Default for ConfigGrpcCompression {
+    fn default() -> Self {
+        Self {
+            accept: Self::default_compression(),
+            send: Self::default_compression(),
+        }
+    }
+}
+
+impl ConfigGrpcCompression {
+    fn deserialize_compression<'de, D>(
+        deserializer: D,
+    ) -> Result<Vec<CompressionEncoding>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        Vec::<&str>::deserialize(deserializer)?
+            .into_iter()
+            .map(|value| match value {
+                "gzip" => Ok(CompressionEncoding::Gzip),
+                "zstd" => Ok(CompressionEncoding::Zstd),
+                value => Err(de::Error::custom(format!(
+                    "Unknown compression format: {value}"
+                ))),
+            })
+            .collect::<Result<_, _>>()
+    }
+
+    fn default_compression() -> Vec<CompressionEncoding> {
+        vec![CompressionEncoding::Gzip, CompressionEncoding::Zstd]
+    }
+}
+
+#[derive(Debug, Clone, Copy, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ConfigPrometheus {
+    /// Address of Prometheus service.
+    pub address: SocketAddr,
+}
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum ValueIntStr<'a, T> {
+    Int(T),
+    Str(&'a str),
+}
+
+fn deserialize_int_str<'de, D, T>(deserializer: D) -> Result<T, D::Error>
+where
+    D: Deserializer<'de>,
+    T: Deserialize<'de> + FromStr,
+    <T as FromStr>::Err: fmt::Display,
+{
+    match ValueIntStr::<T>::deserialize(deserializer)? {
+        ValueIntStr::Int(value) => Ok(value),
+        ValueIntStr::Str(value) => value
+            .replace('_', "")
+            .parse::<T>()
+            .map_err(de::Error::custom),
+    }
+}
+
+fn deserialize_int_str_maybe<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
+where
+    D: Deserializer<'de>,
+    T: Deserialize<'de> + FromStr,
+    <T as FromStr>::Err: fmt::Display,
+{
+    match Option::<ValueIntStr<T>>::deserialize(deserializer)? {
+        Some(ValueIntStr::Int(value)) => Ok(Some(value)),
+        Some(ValueIntStr::Str(value)) => value
+            .replace('_', "")
+            .parse::<T>()
+            .map(Some)
+            .map_err(de::Error::custom),
+        None => Ok(None),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use {
+        crate::config::{GrpcAddress, GrpcAddresses},
+        std::path::Path,
+    };
+
+    #[test]
+    fn test_deser_config_tokio() {
+        let json = r#"{
+            "worker_threads": 4,
+            "affinity": "0-2,3"
+        }"#;
+        let config: super::ConfigTokio = serde_json::from_str(json).unwrap();
+        assert_eq!(config.worker_threads, Some(4));
+        assert_eq!(config.affinity, Some(vec![0, 1, 2, 3]));
+
+        let json_without_affinity = r#"{
+            "worker_threads": 4
+        }"#;
+        let config: super::ConfigTokio = serde_json::from_str(json_without_affinity).unwrap();
+        assert_eq!(config.worker_threads, Some(4));
+        assert_eq!(config.affinity, None);
+
+        let json_with_null_affinity = r#"{
+            "worker_threads": 4,
+            "affinity": null
+        }"#;
+        let config: super::ConfigTokio = serde_json::from_str(json_with_null_affinity).unwrap();
+        assert_eq!(config.worker_threads, Some(4));
+        assert_eq!(config.affinity, None);
+    }
+
+    #[test]
+    fn test_grpc_address_single_tcp() {
+        let json = r#""0.0.0.0:10000""#;
+        let addrs: GrpcAddresses = serde_json::from_str(json).unwrap();
+        assert_eq!(addrs.inner.len(), 1);
+        assert!(matches!(addrs.inner[0], GrpcAddress::Tcp(addr) if addr.port() == 10000));
+    }
+
+    #[test]
+    fn test_grpc_address_single_uds() {
+        let json = r#""unix:///var/run/geyser.sock""#;
+        let addrs: GrpcAddresses = serde_json::from_str(json).unwrap();
+        assert_eq!(addrs.inner.len(), 1);
+        assert!(
+            matches!(&addrs.inner[0], GrpcAddress::Unix { path, .. } if path == Path::new("/var/run/geyser.sock"))
+        );
+    }
+
+    #[test]
+    fn test_grpc_address_array_tcp_only() {
+        let json = r#"["0.0.0.0:10000", "0.0.0.0:10001"]"#;
+        let addrs: GrpcAddresses = serde_json::from_str(json).unwrap();
+        assert_eq!(addrs.inner.len(), 2);
+        assert!(matches!(addrs.inner[0], GrpcAddress::Tcp(addr) if addr.port() == 10000));
+        assert!(matches!(addrs.inner[1], GrpcAddress::Tcp(addr) if addr.port() == 10001));
+    }
+
+    #[test]
+    fn test_grpc_address_array_uds_only() {
+        let json = r#"["unix:///var/run/a.sock", "unix:///var/run/b.sock"]"#;
+        let addrs: GrpcAddresses = serde_json::from_str(json).unwrap();
+        assert_eq!(addrs.inner.len(), 2);
+        assert!(
+            matches!(&addrs.inner[0], GrpcAddress::Unix { path, .. } if path == Path::new("/var/run/a.sock"))
+        );
+        assert!(
+            matches!(&addrs.inner[1], GrpcAddress::Unix { path, .. } if path == Path::new("/var/run/b.sock"))
+        );
+    }
+
+    #[test]
+    fn test_grpc_address_array_mixed() {
+        let json = r#"["0.0.0.0:10000", "unix:///var/run/geyser.sock", "127.0.0.1:10001"]"#;
+        let addrs: GrpcAddresses = serde_json::from_str(json).unwrap();
+        assert_eq!(addrs.inner.len(), 3);
+        assert!(matches!(addrs.inner[0], GrpcAddress::Tcp(addr) if addr.port() == 10000));
+        assert!(
+            matches!(&addrs.inner[1], GrpcAddress::Unix { path, .. } if path == Path::new("/var/run/geyser.sock"))
+        );
+        assert!(matches!(addrs.inner[2], GrpcAddress::Tcp(addr) if addr.port() == 10001));
+    }
+
+    #[test]
+    fn test_grpc_address_uds_default_mode() {
+        let json = r#""unix:///var/run/geyser.sock""#;
+        let addrs: GrpcAddresses = serde_json::from_str(json).unwrap();
+        assert!(matches!(&addrs.inner[0], GrpcAddress::Unix { mode, .. } if *mode == 0o660));
+    }
+
+    #[test]
+    fn test_grpc_address_uds_custom_mode() {
+        let json = r#"{"path": "unix:///var/run/geyser.sock", "mode": 448}"#; // 448 = 0o700
+        let addrs: GrpcAddresses = serde_json::from_str(json).unwrap();
+        assert!(matches!(&addrs.inner[0], GrpcAddress::Unix { mode, .. } if *mode == 0o700));
+    }
+
+    #[test]
+    fn test_grpc_address_mode_on_tcp_fails() {
+        let json = r#"{"path": "0.0.0.0:10000", "mode": 448}"#;
+        let result: Result<GrpcAddresses, _> = serde_json::from_str(json);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_grpc_address_empty_array() {
+        let json = r#"[]"#;
+        let result: Result<GrpcAddresses, _> = serde_json::from_str(json);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_grpc_address_invalid_tcp() {
+        let json = r#""not_valid""#;
+        let result: Result<GrpcAddresses, _> = serde_json::from_str(json);
+        assert!(result.is_err());
+    }
+}
