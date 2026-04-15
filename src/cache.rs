@@ -55,15 +55,44 @@ impl GlobalPoolCache {
         }
     }
 
+    // pub fn update_pool(&self, id: String, state: PoolState) {
+    //     self.symbols.insert(state.symbol_a.to_uppercase(), state.token_a.clone());
+    //     self.symbols.insert(state.symbol_b.to_uppercase(), state.token_b.clone());
+    //     self.mints.insert(state.token_a.clone(), state.symbol_a.clone());
+    //     self.mints.insert(state.token_b.clone(), state.symbol_b.clone());
+    //     self.decimals.insert(state.token_a.clone(), state.decimals_a);
+    //     self.decimals.insert(state.token_b.clone(), state.decimals_b);
+    //     self.pools.insert(id, state);
+    // }
+
     pub fn update_pool(&self, id: String, state: PoolState) {
-        self.symbols.insert(state.symbol_a.to_uppercase(), state.token_a.clone());
-        self.symbols.insert(state.symbol_b.to_uppercase(), state.token_b.clone());
-        self.mints.insert(state.token_a.clone(), state.symbol_a.clone());
-        self.mints.insert(state.token_b.clone(), state.symbol_b.clone());
-        self.decimals.insert(state.token_a.clone(), state.decimals_a);
-        self.decimals.insert(state.token_b.clone(), state.decimals_b);
-        self.pools.insert(id, state);
+    let sym_a = state.symbol_a.to_uppercase();
+    let sym_b = state.symbol_b.to_uppercase();
+
+    // 1. Only insert symbols if they aren't "UNKNOWN" 
+    // 2. Only insert if they don't already exist (prevent overwriting good data with bad)
+    if sym_a != "UNKNOWN" && !self.symbols.contains_key(&sym_a) {
+        self.symbols.insert(sym_a, state.token_a.clone());
     }
+    if sym_b != "UNKNOWN" && !self.symbols.contains_key(&sym_b) {
+        self.symbols.insert(sym_b, state.token_b.clone());
+    }
+
+    // Always keep mint-to-symbol and decimals updated 
+    // but consider adding a check to ensure state.token_a is actually a valid mint length
+    if state.token_a.len() > 30 {
+        self.mints.insert(state.token_a.clone(), state.symbol_a.clone());
+        self.decimals.insert(state.token_a.clone(), state.decimals_a);
+    }
+    
+    if state.token_b.len() > 30 {
+        self.mints.insert(state.token_b.clone(), state.symbol_b.clone());
+        self.decimals.insert(state.token_b.clone(), state.decimals_b);
+    }
+
+    // Update the actual pool state
+    self.pools.insert(id, state);
+}
 
     pub fn seed_common_tokens(&self) {
         let tokens = vec![

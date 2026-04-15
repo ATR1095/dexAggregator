@@ -51,6 +51,7 @@ impl MySOR {
         token.to_string()
     }
 
+
     fn atomic_to_human(&self, amount: u128, decimals: u32) -> String {
         if decimals == 0 {
             return amount.to_string();
@@ -125,35 +126,60 @@ impl SorService for MySOR {
         let input_mint = self.resolve_token(&req.input_token);
         let output_mint = self.resolve_token(&req.output_token);
 
-        let quote = self.quoter.get_quote(&input_mint, &output_mint, amount_in, 16)
-            .map_err(|e| Status::internal(format!("Quote error: {}", e)))?;
-
+        let input_decimals = self.quoter.cache.get_decimals(&input_mint);
         let output_decimals = self.quoter.cache.get_decimals(&output_mint);
 
-        let mut token_path = Vec::new();
-        if let Some(route) = quote.routes.get(0) {
-            token_path.push(self.quoter.cache.get_symbol_by_mint(&input_mint));
+        let mut quote = self.quoter.get_quote(&input_mint, &output_mint, amount_in, 16)
+            .map_err(|e| Status::internal(format!("Quote error: {}", e)))?;
+
+        // Sort routes descending by amount_out: best route (highest output) first.
+        quote.routes.sort_by(|a, b| b.amount_out.cmp(&a.amount_out));
+
+        // Build the token path for each route plan.
+        let build_token_path = |pool_ids: &Vec<String>| -> Vec<String> {
+            let mut path = Vec::new();
+            path.push(self.quoter.cache.get_symbol_by_mint(&input_mint));
             let mut current_token = input_mint.clone();
-            for pool_id in &route.pool_ids {
+            for pool_id in pool_ids {
                 if let Some(pool) = self.quoter.cache.get_pool(pool_id) {
                     if pool.token_a == current_token {
                         current_token = pool.token_b.clone();
                     } else {
                         current_token = pool.token_a.clone();
                     }
-                    token_path.push(self.quoter.cache.get_symbol_by_mint(&current_token));
+                    path.push(self.quoter.cache.get_symbol_by_mint(&current_token));
                 }
             }
-        }
+            path
+        };
 
-        let route_str = token_path.join(" -> ");
+        // Build the detailed routes (already sorted best-first).
+        let detailed_routes: Vec<sor::DetailedRoute> = quote.routes.iter().map(|plan| {
+            let token_path = build_token_path(&plan.pool_ids);
+            sor::DetailedRoute {
+                token_path,
+                pool_ids: plan.pool_ids.clone(),
+                amount_in: plan.amount_in.to_string(),
+                amount_out: plan.amount_out.to_string(),
+                human_amount_in: self.atomic_to_human(plan.amount_in as u128, input_decimals),
+                human_amount_out: self.atomic_to_human(plan.amount_out as u128, output_decimals),
+            }
+        }).collect();
+
+        // Best route token path (index 0 after sort = highest amount_out = best).
+        let best_token_path = quote.routes.first()
+            .map(|plan| build_token_path(&plan.pool_ids))
+            .unwrap_or_default();
+
+        let route_str = best_token_path.join(" -> ");
         Ok(Response::new(sor::SwapResponse {
             tx_hash: "0x...".to_string(),
             status: "success".to_string(),
             message: format!("Swap initiated for {} to {} via [{}]", req.input_token, req.output_token, route_str),
-            route: token_path,
+            route: best_token_path,
             output_amount: quote.amount_out.to_string(),
             human_output_amount: self.atomic_to_human(quote.amount_out as u128, output_decimals),
+            routes: detailed_routes,
         }))
     }
 }
