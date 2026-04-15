@@ -35,11 +35,22 @@ message SwapRequest {
   double slippage_bps = 5;
 }
 
+// A single candidate route with its token path and amounts.
+message DetailedRoute {
+  repeated string token_path = 1;  // e.g., ["SOL", "USDC"]
+  repeated string pool_ids = 2;    // Pool IDs used
+  string amount_in = 3;
+  string amount_out = 4;
+  string human_amount_in = 5;
+  string human_amount_out = 6;
+}
+
 message SwapResponse {
   string tx_hash = 1;
   string status = 2;
   string message = 3;
-  repeated string route = 4; // Token path
+  repeated string route = 4;          // Best route token path (kept for backwards compat)
   string output_amount = 5;
   string human_output_amount = 6;
+  repeated DetailedRoute routes = 7;  // All routes, sorted best (highest output) first
 }

@@ -265,21 +265,107 @@ func (x *SwapRequest) GetSlippageBps() float64 {
 	return 0
 }
 
+// A single candidate route with its token path and amounts.
+type DetailedRoute struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	TokenPath      []string               `protobuf:"bytes,1,rep,name=token_path,json=tokenPath,proto3" json:"token_path,omitempty"` // e.g., ["SOL", "USDC"]
+	PoolIds        []string               `protobuf:"bytes,2,rep,name=pool_ids,json=poolIds,proto3" json:"pool_ids,omitempty"`       // Pool IDs used
+	AmountIn       string                 `protobuf:"bytes,3,opt,name=amount_in,json=amountIn,proto3" json:"amount_in,omitempty"`
+	AmountOut      string                 `protobuf:"bytes,4,opt,name=amount_out,json=amountOut,proto3" json:"amount_out,omitempty"`
+	HumanAmountIn  string                 `protobuf:"bytes,5,opt,name=human_amount_in,json=humanAmountIn,proto3" json:"human_amount_in,omitempty"`
+	HumanAmountOut string                 `protobuf:"bytes,6,opt,name=human_amount_out,json=humanAmountOut,proto3" json:"human_amount_out,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *DetailedRoute) Reset() {
+	*x = DetailedRoute{}
+	mi := &file_proto_sor_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DetailedRoute) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DetailedRoute) ProtoMessage() {}
+
+func (x *DetailedRoute) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_sor_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DetailedRoute.ProtoReflect.Descriptor instead.
+func (*DetailedRoute) Descriptor() ([]byte, []int) {
+	return file_proto_sor_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *DetailedRoute) GetTokenPath() []string {
+	if x != nil {
+		return x.TokenPath
+	}
+	return nil
+}
+
+func (x *DetailedRoute) GetPoolIds() []string {
+	if x != nil {
+		return x.PoolIds
+	}
+	return nil
+}
+
+func (x *DetailedRoute) GetAmountIn() string {
+	if x != nil {
+		return x.AmountIn
+	}
+	return ""
+}
+
+func (x *DetailedRoute) GetAmountOut() string {
+	if x != nil {
+		return x.AmountOut
+	}
+	return ""
+}
+
+func (x *DetailedRoute) GetHumanAmountIn() string {
+	if x != nil {
+		return x.HumanAmountIn
+	}
+	return ""
+}
+
+func (x *DetailedRoute) GetHumanAmountOut() string {
+	if x != nil {
+		return x.HumanAmountOut
+	}
+	return ""
+}
+
 type SwapResponse struct {
 	state             protoimpl.MessageState `protogen:"open.v1"`
 	TxHash            string                 `protobuf:"bytes,1,opt,name=tx_hash,json=txHash,proto3" json:"tx_hash,omitempty"`
 	Status            string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
 	Message           string                 `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
-	Route             []string               `protobuf:"bytes,4,rep,name=route,proto3" json:"route,omitempty"` // Token path
+	Route             []string               `protobuf:"bytes,4,rep,name=route,proto3" json:"route,omitempty"` // Best route token path (kept for backwards compat)
 	OutputAmount      string                 `protobuf:"bytes,5,opt,name=output_amount,json=outputAmount,proto3" json:"output_amount,omitempty"`
 	HumanOutputAmount string                 `protobuf:"bytes,6,opt,name=human_output_amount,json=humanOutputAmount,proto3" json:"human_output_amount,omitempty"`
+	Routes            []*DetailedRoute       `protobuf:"bytes,7,rep,name=routes,proto3" json:"routes,omitempty"` // All routes, sorted best (highest output) first
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
 func (x *SwapResponse) Reset() {
 	*x = SwapResponse{}
-	mi := &file_proto_sor_proto_msgTypes[3]
+	mi := &file_proto_sor_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -291,7 +377,7 @@ func (x *SwapResponse) String() string {
 func (*SwapResponse) ProtoMessage() {}
 
 func (x *SwapResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_sor_proto_msgTypes[3]
+	mi := &file_proto_sor_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -304,7 +390,7 @@ func (x *SwapResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SwapResponse.ProtoReflect.Descriptor instead.
 func (*SwapResponse) Descriptor() ([]byte, []int) {
-	return file_proto_sor_proto_rawDescGZIP(), []int{3}
+	return file_proto_sor_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *SwapResponse) GetTxHash() string {
@@ -349,6 +435,13 @@ func (x *SwapResponse) GetHumanOutputAmount() string {
 	return ""
 }
 
+func (x *SwapResponse) GetRoutes() []*DetailedRoute {
+	if x != nil {
+		return x.Routes
+	}
+	return nil
+}
+
 var File_proto_sor_proto protoreflect.FileDescriptor
 
 const file_proto_sor_proto_rawDesc = "" +
@@ -377,14 +470,24 @@ const file_proto_sor_proto_rawDesc = "" +
 	"\foutput_token\x18\x02 \x01(\tR\voutputToken\x12\x16\n" +
 	"\x06amount\x18\x03 \x01(\tR\x06amount\x12!\n" +
 	"\fuser_address\x18\x04 \x01(\tR\vuserAddress\x12!\n" +
-	"\fslippage_bps\x18\x05 \x01(\x01R\vslippageBps\"\xc4\x01\n" +
+	"\fslippage_bps\x18\x05 \x01(\x01R\vslippageBps\"\xd7\x01\n" +
+	"\rDetailedRoute\x12\x1d\n" +
+	"\n" +
+	"token_path\x18\x01 \x03(\tR\ttokenPath\x12\x19\n" +
+	"\bpool_ids\x18\x02 \x03(\tR\apoolIds\x12\x1b\n" +
+	"\tamount_in\x18\x03 \x01(\tR\bamountIn\x12\x1d\n" +
+	"\n" +
+	"amount_out\x18\x04 \x01(\tR\tamountOut\x12&\n" +
+	"\x0fhuman_amount_in\x18\x05 \x01(\tR\rhumanAmountIn\x12(\n" +
+	"\x10human_amount_out\x18\x06 \x01(\tR\x0ehumanAmountOut\"\xf0\x01\n" +
 	"\fSwapResponse\x12\x17\n" +
 	"\atx_hash\x18\x01 \x01(\tR\x06txHash\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
 	"\amessage\x18\x03 \x01(\tR\amessage\x12\x14\n" +
 	"\x05route\x18\x04 \x03(\tR\x05route\x12#\n" +
 	"\routput_amount\x18\x05 \x01(\tR\foutputAmount\x12.\n" +
-	"\x13human_output_amount\x18\x06 \x01(\tR\x11humanOutputAmount2i\n" +
+	"\x13human_output_amount\x18\x06 \x01(\tR\x11humanOutputAmount\x12*\n" +
+	"\x06routes\x18\a \x03(\v2\x12.sor.DetailedRouteR\x06routes2i\n" +
 	"\n" +
 	"SORService\x12.\n" +
 	"\x05Quote\x12\x11.sor.QuoteRequest\x1a\x12.sor.QuoteResponse\x12+\n" +
@@ -402,23 +505,25 @@ func file_proto_sor_proto_rawDescGZIP() []byte {
 	return file_proto_sor_proto_rawDescData
 }
 
-var file_proto_sor_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_sor_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_proto_sor_proto_goTypes = []any{
 	(*QuoteRequest)(nil),  // 0: sor.QuoteRequest
 	(*QuoteResponse)(nil), // 1: sor.QuoteResponse
 	(*SwapRequest)(nil),   // 2: sor.SwapRequest
-	(*SwapResponse)(nil),  // 3: sor.SwapResponse
+	(*DetailedRoute)(nil), // 3: sor.DetailedRoute
+	(*SwapResponse)(nil),  // 4: sor.SwapResponse
 }
 var file_proto_sor_proto_depIdxs = []int32{
-	0, // 0: sor.SORService.Quote:input_type -> sor.QuoteRequest
-	2, // 1: sor.SORService.Swap:input_type -> sor.SwapRequest
-	1, // 2: sor.SORService.Quote:output_type -> sor.QuoteResponse
-	3, // 3: sor.SORService.Swap:output_type -> sor.SwapResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	3, // 0: sor.SwapResponse.routes:type_name -> sor.DetailedRoute
+	0, // 1: sor.SORService.Quote:input_type -> sor.QuoteRequest
+	2, // 2: sor.SORService.Swap:input_type -> sor.SwapRequest
+	1, // 3: sor.SORService.Quote:output_type -> sor.QuoteResponse
+	4, // 4: sor.SORService.Swap:output_type -> sor.SwapResponse
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_proto_sor_proto_init() }
@@ -432,7 +537,7 @@ func file_proto_sor_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_sor_proto_rawDesc), len(file_proto_sor_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

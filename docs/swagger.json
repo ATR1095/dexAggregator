@@ -189,17 +189,67 @@
                 }
             }
         },
+        "sor.DetailedRoute": {
+            "description": "A single candidate route with token path and amounts.",
+            "type": "object",
+            "properties": {
+                "token_path": {
+                    "description": "Human-readable token symbols in order (e.g. SOL -> USDC)",
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "pool_ids": {
+                    "description": "Pool IDs used along this route",
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "amount_in": {
+                    "description": "Atomic input amount allocated to this route",
+                    "type": "string"
+                },
+                "amount_out": {
+                    "description": "Atomic output amount from this route",
+                    "type": "string"
+                },
+                "human_amount_in": {
+                    "description": "Human-readable input amount",
+                    "type": "string"
+                },
+                "human_amount_out": {
+                    "description": "Human-readable output amount",
+                    "type": "string"
+                }
+            }
+        },
         "sor.SwapResponse": {
             "type": "object",
             "properties": {
-                "message": {
+                "tx_hash": {
                     "type": "string"
                 },
                 "status": {
                     "type": "string"
                 },
-                "tx_hash": {
+                "message": {
                     "type": "string"
+                },
+                "route": {
+                    "description": "Best route token path (backwards compatible)",
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "output_amount": {
+                    "description": "Total atomic output amount",
+                    "type": "string"
+                },
+                "human_output_amount": {
+                    "description": "Total human-readable output amount",
+                    "type": "string"
+                },
+                "routes": {
+                    "description": "All candidate routes sorted best-first (highest output_amount first)",
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/sor.DetailedRoute" }
                 }
             }
         }

@@ -51,14 +51,56 @@ definitions:
       price_impact:
         type: number
     type: object
+  sor.DetailedRoute:
+    description: A single candidate route with token path and amounts.
+    properties:
+      token_path:
+        description: Human-readable token symbols in order (e.g. SOL -> USDC)
+        items:
+          type: string
+        type: array
+      pool_ids:
+        description: Pool IDs used along this route
+        items:
+          type: string
+        type: array
+      amount_in:
+        description: Atomic input amount allocated to this route
+        type: string
+      amount_out:
+        description: Atomic output amount from this route
+        type: string
+      human_amount_in:
+        description: Human-readable input amount
+        type: string
+      human_amount_out:
+        description: Human-readable output amount
+        type: string
+    type: object
   sor.SwapResponse:
     properties:
-      message:
+      tx_hash:
         type: string
       status:
         type: string
-      tx_hash:
+      message:
         type: string
+      route:
+        description: Best route token path (backwards compatible)
+        items:
+          type: string
+        type: array
+      output_amount:
+        description: Total atomic output amount
+        type: string
+      human_output_amount:
+        description: Total human-readable output amount
+        type: string
+      routes:
+        description: All candidate routes sorted best-first (highest output_amount first)
+        items:
+          $ref: '#/definitions/sor.DetailedRoute'
+        type: array
     type: object
 host: localhost:8081
 info:
