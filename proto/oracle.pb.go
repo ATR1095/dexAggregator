@@ -202,6 +202,7 @@ type PoolUpdate struct {
 	SymbolB       string                 `protobuf:"bytes,9,opt,name=symbol_b,json=symbolB,proto3" json:"symbol_b,omitempty"`
 	DecimalsA     uint32                 `protobuf:"varint,10,opt,name=decimals_a,json=decimalsA,proto3" json:"decimals_a,omitempty"`
 	DecimalsB     uint32                 `protobuf:"varint,11,opt,name=decimals_b,json=decimalsB,proto3" json:"decimals_b,omitempty"`
+	DexLabel      string                 `protobuf:"bytes,12,opt,name=dex_label,json=dexLabel,proto3" json:"dex_label,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -313,6 +314,13 @@ func (x *PoolUpdate) GetDecimalsB() uint32 {
 	return 0
 }
 
+func (x *PoolUpdate) GetDexLabel() string {
+	if x != nil {
+		return x.DexLabel
+	}
+	return ""
+}
+
 var File_proto_oracle_proto protoreflect.FileDescriptor
 
 const file_proto_oracle_proto_rawDesc = "" +
@@ -324,7 +332,7 @@ const file_proto_oracle_proto_rawDesc = "" +
 	"\vPoolRequest\x12\x17\n" +
 	"\apool_id\x18\x01 \x01(\tR\x06poolId\",\n" +
 	"\rStreamRequest\x12\x1b\n" +
-	"\tdex_types\x18\x01 \x03(\tR\bdexTypes\"\xbf\x02\n" +
+	"\tdex_types\x18\x01 \x03(\tR\bdexTypes\"\xdc\x02\n" +
 	"\n" +
 	"PoolUpdate\x12\x17\n" +
 	"\apool_id\x18\x01 \x01(\tR\x06poolId\x12\x17\n" +
@@ -341,7 +349,8 @@ const file_proto_oracle_proto_rawDesc = "" +
 	"decimals_a\x18\n" +
 	" \x01(\rR\tdecimalsA\x12\x1d\n" +
 	"\n" +
-	"decimals_b\x18\v \x01(\rR\tdecimalsB2\x7f\n" +
+	"decimals_b\x18\v \x01(\rR\tdecimalsB\x12\x1b\n" +
+	"\tdex_label\x18\f \x01(\tR\bdexLabel2\x7f\n" +
 	"\vPriceOracle\x12:\n" +
 	"\x0fGetPoolReserves\x12\x13.oracle.PoolRequest\x1a\x12.oracle.PoolUpdate\x124\n" +
 	"\x11GetMonitoredPools\x12\r.oracle.Empty\x1a\x10.oracle.PoolListB\x1aZ\x18priceOracleService/protob\x06proto3"

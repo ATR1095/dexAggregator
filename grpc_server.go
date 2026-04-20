@@ -38,6 +38,7 @@ func (s *OracleServer) GetPoolReserves(ctx context.Context, req *pb.PoolRequest)
 	tokenB := data["token_b"]
 	symA := data["symbol_a"]
 	symB := data["symbol_b"]
+	dexLabel := data["dex_type"]
 
 	return &pb.PoolUpdate{
 		PoolId:    req.PoolId,
@@ -49,6 +50,7 @@ func (s *OracleServer) GetPoolReserves(ctx context.Context, req *pb.PoolRequest)
 		ReserveB:  resB,
 		DecimalsA: uint32(decA),
 		DecimalsB: uint32(decB),
+		DexLabel:  dexLabel,
 	}, nil
 }
 
