@@ -20,6 +20,7 @@ pub struct PoolState {
     pub reserve_b: u64,
     pub pool_type: PoolType,
     pub fee_bps: u16,
+    pub dex_label: String,
     pub clmm_data: Option<ClmmData>,
 }
 

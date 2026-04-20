@@ -101,7 +101,7 @@ impl SorService for MySOR {
             }
         }
 
-        let response = sor::QuoteResponse {
+        let mut response = sor::QuoteResponse {
             input_token: req.input_token,
             output_token: req.output_token,
             input_amount: req.amount.clone(),
@@ -113,7 +113,57 @@ impl SorService for MySOR {
             human_output_amount: self.atomic_to_human(quote.amount_out as u128, output_decimals),
         };
 
+        // Populate new fields for the best route (legacy QuoteResponse)
+        // Note: For now, QuoteResponse only has an overall price_impact.
+        // We'll calculate it for the best route.
+        if let Some(best_route) = quote.routes.first() {
+            response.price_impact = best_route.price_impact;
+        }
+
         Ok(Response::new(response))
+    }
+
+    async fn list_tokens(
+        &self,
+        _request: Request<sor::ListTokensRequest>,
+    ) -> Result<Response<sor::ListTokensResponse>, Status> {
+        let mut seen_a = std::collections::HashSet::new();
+        let mut seen_b = std::collections::HashSet::new();
+        let mut token_a_list = Vec::new();
+        let mut token_b_list = Vec::new();
+
+        for entry in self.quoter.cache.pools.iter() {
+            let pool = entry.value();
+
+            // Collect unique token_a entries (filter out UNKNOWN)
+            if pool.symbol_a.to_uppercase() != "UNKNOWN" && seen_a.insert(pool.token_a.clone()) {
+                token_a_list.push(sor::TokenInfo {
+                    mint: pool.token_a.clone(),
+                    symbol: pool.symbol_a.clone(),
+                    decimals: pool.decimals_a,
+                });
+            }
+
+            // Collect unique token_b entries (filter out UNKNOWN)
+            if pool.symbol_b.to_uppercase() != "UNKNOWN" && seen_b.insert(pool.token_b.clone()) {
+                token_b_list.push(sor::TokenInfo {
+                    mint: pool.token_b.clone(),
+                    symbol: pool.symbol_b.clone(),
+                    decimals: pool.decimals_b,
+                });
+            }
+        }
+
+        // Sort both lists alphabetically by symbol for consistent ordering
+        token_a_list.sort_by(|a, b| a.symbol.to_lowercase().cmp(&b.symbol.to_lowercase()));
+        token_b_list.sort_by(|a, b| a.symbol.to_lowercase().cmp(&b.symbol.to_lowercase()));
+
+        info!("ListTokens: returning {} token_a, {} token_b", token_a_list.len(), token_b_list.len());
+
+        Ok(Response::new(sor::ListTokensResponse {
+            token_a: token_a_list,
+            token_b: token_b_list,
+        }))
     }
 
     async fn swap(
@@ -163,6 +213,10 @@ impl SorService for MySOR {
                 amount_out: plan.amount_out.to_string(),
                 human_amount_in: self.atomic_to_human(plan.amount_in as u128, input_decimals),
                 human_amount_out: self.atomic_to_human(plan.amount_out as u128, output_decimals),
+                price_impact: plan.price_impact,
+                dex_labels: plan.pool_ids.iter().map(|id| {
+                    self.quoter.cache.get_pool(id).map(|p| p.dex_label).unwrap_or_default()
+                }).collect(),
             }
         }).collect();
 
@@ -228,6 +282,7 @@ async fn refresh_pools(
                         reserve_b: update.reserve_b,
                         pool_type: PoolType::ConstantProduct,
                         fee_bps: 30,
+                        dex_label: update.dex_label,
                         clmm_data: None,
                     });
                 }

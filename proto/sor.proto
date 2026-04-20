@@ -7,6 +7,20 @@ option go_package = "github.com/dexAggregator/APIGateway/proto/sor";
 service SORService {
   rpc Quote (QuoteRequest) returns (QuoteResponse);
   rpc Swap (SwapRequest) returns (SwapResponse);
+  rpc ListTokens (ListTokensRequest) returns (ListTokensResponse);
+}
+
+message ListTokensRequest {}
+
+message TokenInfo {
+  string mint = 1;
+  string symbol = 2;
+  uint32 decimals = 3;
+}
+
+message ListTokensResponse {
+  repeated TokenInfo token_a = 1;  // All tokens appearing as token_a in pools
+  repeated TokenInfo token_b = 2;  // All tokens appearing as token_b in pools
 }
 
 message QuoteRequest {
@@ -43,6 +57,8 @@ message DetailedRoute {
   string amount_out = 4;
   string human_amount_in = 5;
   string human_amount_out = 6;
+  double price_impact = 7;
+  repeated string dex_labels = 8;
 }
 
 message SwapResponse {

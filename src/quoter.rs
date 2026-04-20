@@ -13,6 +13,7 @@ pub struct RoutePlan {
     pub pool_ids: Vec<String>,
     pub amount_in: u64,
     pub amount_out: u64,
+    pub price_impact: f64,
 }
 
 pub struct Quoter {
@@ -74,6 +75,7 @@ impl Quoter {
                     pool_ids: paths[idx].clone(),
                     amount_in: alloc,
                     amount_out: self.simulate_path(&paths[idx], token_in, alloc)?,
+                    price_impact: self.calculate_price_impact(&paths[idx], token_in, alloc)?,
                 });
             }
         }
@@ -113,6 +115,33 @@ impl Quoter {
             current_token = if a_to_b { pool.token_b } else { pool.token_a };
         }
         Ok(current_amount)
+    }
+
+    fn calculate_price_impact(&self, path: &[String], token_in: &str, amount_in: u64) -> Result<f64> {
+        let mut ideal_out = amount_in as f64;
+        let mut current_token = token_in.to_string();
+
+        for pool_id in path {
+            let pool = self.cache.get_pool(pool_id).ok_or_else(|| anyhow!("Pool {} not found", pool_id))?;
+            let (reserve_in, reserve_out) = if pool.token_a == current_token {
+                (pool.reserve_a, pool.reserve_b)
+            } else {
+                (pool.reserve_b, pool.reserve_a)
+            };
+
+            if reserve_in == 0 { return Ok(0.0); }
+            let mid_price = reserve_out as f64 / reserve_in as f64;
+            ideal_out *= mid_price;
+
+            // Advance current token
+            current_token = if pool.token_a == current_token { pool.token_b } else { pool.token_a };
+        }
+
+        let actual_out = self.simulate_path(path, token_in, amount_in)? as f64;
+        if ideal_out <= 0.0 { return Ok(0.0); }
+
+        let impact = (1.0 - (actual_out / ideal_out)) * 100.0;
+        Ok(impact.max(0.0))
     }
 
     pub fn build_route(&self, quote: &Quote) -> Vec<u8> {

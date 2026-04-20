@@ -34,4 +34,5 @@ message PoolUpdate {
   string symbol_b = 9;
   uint32 decimals_a = 10;
   uint32 decimals_b = 11;
+  string dex_label = 12;
 }
