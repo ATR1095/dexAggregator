@@ -64,6 +64,7 @@ func QuoteHandler(client *grpc.Client) gin.HandlerFunc {
 			"human_output_amount": resp.HumanOutputAmount,
 			"path":                resp.Path,
 			"token_path":          resp.TokenPath,
+			"price_impact":        resp.PriceImpact,
 		})
 	}
 }

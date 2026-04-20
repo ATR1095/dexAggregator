@@ -53,6 +53,7 @@ func main() {
 	r := gin.New()
 	r.Use(gin.Recovery())
 	r.Use(middleware.Logger(logger))
+	r.Use(middleware.CORS())
 
 	// Public v1 group
 	v1 := r.Group("/v1")
@@ -64,6 +65,7 @@ func main() {
 	// Routes
 	v1.POST("/quote", handlers.QuoteHandler(grpcClient))
 	v1.POST("/swap", handlers.SwapHandler(grpcClient))
+	v1.GET("/tokens", handlers.TokensHandler(grpcClient))
 
 	// Health check
 	r.GET("/health", func(c *gin.Context) {

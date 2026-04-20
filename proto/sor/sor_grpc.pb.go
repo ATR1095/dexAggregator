@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SORService_Quote_FullMethodName = "/sor.SORService/Quote"
-	SORService_Swap_FullMethodName  = "/sor.SORService/Swap"
+	SORService_Quote_FullMethodName      = "/sor.SORService/Quote"
+	SORService_Swap_FullMethodName       = "/sor.SORService/Swap"
+	SORService_ListTokens_FullMethodName = "/sor.SORService/ListTokens"
 )
 
 // SORServiceClient is the client API for SORService service.
@@ -29,6 +30,7 @@ const (
 type SORServiceClient interface {
 	Quote(ctx context.Context, in *QuoteRequest, opts ...grpc.CallOption) (*QuoteResponse, error)
 	Swap(ctx context.Context, in *SwapRequest, opts ...grpc.CallOption) (*SwapResponse, error)
+	ListTokens(ctx context.Context, in *ListTokensRequest, opts ...grpc.CallOption) (*ListTokensResponse, error)
 }
 
 type sORServiceClient struct {
@@ -59,12 +61,23 @@ func (c *sORServiceClient) Swap(ctx context.Context, in *SwapRequest, opts ...gr
 	return out, nil
 }
 
+func (c *sORServiceClient) ListTokens(ctx context.Context, in *ListTokensRequest, opts ...grpc.CallOption) (*ListTokensResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListTokensResponse)
+	err := c.cc.Invoke(ctx, SORService_ListTokens_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SORServiceServer is the server API for SORService service.
 // All implementations must embed UnimplementedSORServiceServer
 // for forward compatibility.
 type SORServiceServer interface {
 	Quote(context.Context, *QuoteRequest) (*QuoteResponse, error)
 	Swap(context.Context, *SwapRequest) (*SwapResponse, error)
+	ListTokens(context.Context, *ListTokensRequest) (*ListTokensResponse, error)
 	mustEmbedUnimplementedSORServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedSORServiceServer) Quote(context.Context, *QuoteRequest) (*Quo
 }
 func (UnimplementedSORServiceServer) Swap(context.Context, *SwapRequest) (*SwapResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Swap not implemented")
+}
+func (UnimplementedSORServiceServer) ListTokens(context.Context, *ListTokensRequest) (*ListTokensResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListTokens not implemented")
 }
 func (UnimplementedSORServiceServer) mustEmbedUnimplementedSORServiceServer() {}
 func (UnimplementedSORServiceServer) testEmbeddedByValue()                    {}
@@ -138,6 +154,24 @@ func _SORService_Swap_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SORService_ListTokens_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListTokensRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SORServiceServer).ListTokens(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SORService_ListTokens_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SORServiceServer).ListTokens(ctx, req.(*ListTokensRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SORService_ServiceDesc is the grpc.ServiceDesc for SORService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var SORService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Swap",
 			Handler:    _SORService_Swap_Handler,
+		},
+		{
+			MethodName: "ListTokens",
+			Handler:    _SORService_ListTokens_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

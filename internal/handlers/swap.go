@@ -59,6 +59,28 @@ func SwapHandler(client *grpc.Client) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, resp)
+		routes := make([]gin.H, len(resp.Routes))
+		for i, r := range resp.Routes {
+			routes[i] = gin.H{
+				"token_path":       r.TokenPath,
+				"pool_ids":         r.PoolIds,
+				"amount_in":        r.AmountIn,
+				"amount_out":       r.AmountOut,
+				"human_amount_in":  r.HumanAmountIn,
+				"human_amount_out": r.HumanAmountOut,
+				"price_impact":    r.PriceImpact,
+				"dex_labels":      r.DexLabels,
+			}
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"tx_hash":             resp.TxHash,
+			"status":              resp.Status,
+			"message":             resp.Message,
+			"route":               resp.Route,
+			"output_amount":       resp.OutputAmount,
+			"human_output_amount": resp.HumanOutputAmount,
+			"routes":              routes,
+		})
 	}
 }

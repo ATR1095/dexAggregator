@@ -63,3 +63,15 @@ func (c *Client) Swap(ctx context.Context, req *sor.SwapRequest) (*sor.SwapRespo
 	}
 	return result.(*sor.SwapResponse), nil
 }
+
+func (c *Client) ListTokens(ctx context.Context, req *sor.ListTokensRequest) (*sor.ListTokensResponse, error) {
+	result, err := c.cb.Execute(func() (interface{}, error) {
+		ctx, cancel := context.WithTimeout(ctx, 500*time.Millisecond)
+		defer cancel()
+		return c.client.ListTokens(ctx, req)
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*sor.ListTokensResponse), nil
+}

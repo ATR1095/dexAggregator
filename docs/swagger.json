@@ -112,6 +112,29 @@
                     }
                 }
             }
+        },
+        "/v1/tokens": {
+            "get": {
+                "description": "Returns all known tokens grouped by their position (token_a and token_b) across liquidity pools",
+                "produces": ["application/json"],
+                "tags": ["tokens"],
+                "summary": "List all tokens",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/sor.ListTokensResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": { "type": "string" }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -250,6 +273,39 @@
                     "description": "All candidate routes sorted best-first (highest output_amount first)",
                     "type": "array",
                     "items": { "$ref": "#/definitions/sor.DetailedRoute" }
+                }
+            }
+        },
+        "sor.TokenInfo": {
+            "description": "Information about a token in a liquidity pool.",
+            "type": "object",
+            "properties": {
+                "mint": {
+                    "description": "Token mint address",
+                    "type": "string"
+                },
+                "symbol": {
+                    "description": "Token symbol (e.g. SOL, USDC)",
+                    "type": "string"
+                },
+                "decimals": {
+                    "description": "Token decimal places",
+                    "type": "integer"
+                }
+            }
+        },
+        "sor.ListTokensResponse": {
+            "type": "object",
+            "properties": {
+                "token_a": {
+                    "description": "All tokens appearing as token_a in pools",
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/sor.TokenInfo" }
+                },
+                "token_b": {
+                    "description": "All tokens appearing as token_b in pools",
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/sor.TokenInfo" }
                 }
             }
         }

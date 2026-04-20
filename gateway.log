@@ -1,10 +1,15 @@
-nohup: ignoring input
 [GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
  - using env:	export GIN_MODE=release
  - using code:	gin.SetMode(gin.ReleaseMode)
 
-[GIN-debug] POST   /v1/quote                 --> github.com/dexAggregator/APIGateway/internal/handlers.QuoteHandler.func1 (4 handlers)
-[GIN-debug] POST   /v1/swap                  --> github.com/dexAggregator/APIGateway/internal/handlers.SwapHandler.func1 (4 handlers)
-[GIN-debug] GET    /health                   --> main.main.func1 (3 handlers)
-[GIN-debug] GET    /api                      --> main.main.func2 (3 handlers)
-[GIN-debug] GET    /api/*any                 --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (3 handlers)
+[GIN-debug] POST   /v1/quote                 --> github.com/dexAggregator/APIGateway/internal/handlers.QuoteHandler.func1 (5 handlers)
+[GIN-debug] POST   /v1/swap                  --> github.com/dexAggregator/APIGateway/internal/handlers.SwapHandler.func1 (5 handlers)
+[GIN-debug] GET    /v1/tokens                --> main.main.TokensHandler.func7 (5 handlers)
+[GIN-debug] GET    /health                   --> main.main.func1 (4 handlers)
+[GIN-debug] GET    /api                      --> main.main.func2 (4 handlers)
+[GIN-debug] GET    /api/*any                 --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (4 handlers)
+{"level":"info","ts":1776324397.603837,"caller":"middleware/logging.go:28","msg":"request","trace_id":"5b4cb122-2afe-41ea-bfe2-67c8586f6c94","status":200,"method":"POST","path":"/v1/swap","query":"","ip":"127.0.0.1","user-agent":"curl/7.68.0","latency":0.00229603}
+{"level":"info","ts":1776324911.1295316,"caller":"middleware/logging.go:28","msg":"request","trace_id":"17e3cc4f-0e78-48af-b1b8-ae01036956b3","status":204,"method":"OPTIONS","path":"/v1/swap","query":"","ip":"172.16.15.36","user-agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36","latency":0.000034448}
+{"level":"info","ts":1776324911.1508765,"caller":"middleware/logging.go:28","msg":"request","trace_id":"0749b70c-c217-4c6d-abf0-dfe43af16620","status":200,"method":"POST","path":"/v1/swap","query":"","ip":"172.16.15.36","user-agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36","latency":0.001491586}
+{"level":"info","ts":1776325461.3119123,"caller":"APIGateway/main.go:96","msg":"shutting down server..."}
+{"level":"info","ts":1776325461.3121796,"caller":"APIGateway/main.go:104","msg":"server exiting"}

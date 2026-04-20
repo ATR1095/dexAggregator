@@ -102,6 +102,32 @@ definitions:
           $ref: '#/definitions/sor.DetailedRoute'
         type: array
     type: object
+  sor.TokenInfo:
+    description: Information about a token in a liquidity pool.
+    properties:
+      mint:
+        description: Token mint address
+        type: string
+      symbol:
+        description: Token symbol (e.g. SOL, USDC)
+        type: string
+      decimals:
+        description: Token decimal places
+        type: integer
+    type: object
+  sor.ListTokensResponse:
+    properties:
+      token_a:
+        description: All tokens appearing as token_a in pools
+        items:
+          $ref: '#/definitions/sor.TokenInfo'
+        type: array
+      token_b:
+        description: All tokens appearing as token_b in pools
+        items:
+          $ref: '#/definitions/sor.TokenInfo'
+        type: array
+    type: object
 host: localhost:8081
 info:
   contact: {}
@@ -177,4 +203,23 @@ paths:
       summary: Execute a token swap
       tags:
       - swap
+  /v1/tokens:
+    get:
+      description: Returns all known tokens grouped by their position (token_a and token_b) across liquidity pools
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/sor.ListTokensResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List all tokens
+      tags:
+      - tokens
 swagger: "2.0"
