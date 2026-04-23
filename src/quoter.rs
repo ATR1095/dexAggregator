@@ -182,6 +182,7 @@ mod tests {
             reserve_b: 100_000,
             pool_type: PoolType::ConstantProduct,
             fee_bps: 30,
+            dex_label: "test".to_string(),
             clmm_data: None,
         });
 
@@ -199,6 +200,7 @@ mod tests {
             reserve_b: 10_000_000,
             pool_type: PoolType::ConstantProduct,
             fee_bps: 30,
+            dex_label: "test".to_string(),
             clmm_data: None,
         });
 
@@ -214,6 +216,7 @@ mod tests {
             reserve_b: 10_000_000,
             pool_type: PoolType::ConstantProduct,
             fee_bps: 30,
+            dex_label: "test".to_string(),
             clmm_data: None,
         });
 

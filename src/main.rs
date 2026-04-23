@@ -135,26 +135,48 @@ impl SorService for MySOR {
         for entry in self.quoter.cache.pools.iter() {
             let pool = entry.value();
 
-            // Collect unique token_a entries (filter out UNKNOWN)
-            if pool.symbol_a.to_uppercase() != "UNKNOWN" && seen_a.insert(pool.token_a.clone()) {
+            // Only expose tokens from Raydium pools (includes "raydium" and "raydium_cpmm").
+            // Orca pools use CLMM math which we treat as a stub;
+            // their tokens should not appear in the public list until
+            // proper CLMM support is added.
+            if !pool.dex_label.starts_with("raydium") {
+                continue;
+            }
+
+            // Collect unique token_a entries — skip blank or "UNKNOWN" symbols
+            let sym_a_upper = pool.symbol_a.to_uppercase();
+            if !pool.symbol_a.is_empty()
+                && sym_a_upper != "UNKNOWN"
+                && seen_a.insert(pool.token_a.clone())
+            {
+                let symbol = self.quoter.cache.get_symbol_by_mint(&pool.token_a);
+                let symbol = if symbol.contains("...") { pool.symbol_a.clone() } else { symbol };
+
                 token_a_list.push(sor::TokenInfo {
                     mint: pool.token_a.clone(),
-                    symbol: pool.symbol_a.clone(),
+                    symbol,
                     decimals: pool.decimals_a,
                 });
             }
 
-            // Collect unique token_b entries (filter out UNKNOWN)
-            if pool.symbol_b.to_uppercase() != "UNKNOWN" && seen_b.insert(pool.token_b.clone()) {
+            // Collect unique token_b entries — skip blank or "UNKNOWN" symbols
+            let sym_b_upper = pool.symbol_b.to_uppercase();
+            if !pool.symbol_b.is_empty()
+                && sym_b_upper != "UNKNOWN"
+                && seen_b.insert(pool.token_b.clone())
+            {
+                let symbol = self.quoter.cache.get_symbol_by_mint(&pool.token_b);
+                let symbol = if symbol.contains("...") { pool.symbol_b.clone() } else { symbol };
+
                 token_b_list.push(sor::TokenInfo {
                     mint: pool.token_b.clone(),
-                    symbol: pool.symbol_b.clone(),
+                    symbol,
                     decimals: pool.decimals_b,
                 });
             }
         }
 
-        // Sort both lists alphabetically by symbol for consistent ordering
+        // Sort alphabetically by symbol
         token_a_list.sort_by(|a, b| a.symbol.to_lowercase().cmp(&b.symbol.to_lowercase()));
         token_b_list.sort_by(|a, b| a.symbol.to_lowercase().cmp(&b.symbol.to_lowercase()));
 
@@ -165,6 +187,7 @@ impl SorService for MySOR {
             token_b: token_b_list,
         }))
     }
+
 
     async fn swap(
         &self,
@@ -280,7 +303,16 @@ async fn refresh_pools(
                         decimals_b: update.decimals_b,
                         reserve_a: update.reserve_a,
                         reserve_b: update.reserve_b,
-                        pool_type: PoolType::ConstantProduct,
+                        // Orca Whirlpools are CLMM — using their full vault balances with
+                        // constant-product math produces wildly inflated quotes (~6x real).
+                        // Mark them as ConcentratedLiquidity so compute_clmm_swap is called;
+                        // that returns 0 until proper tick math is implemented, preventing the
+                        // SOR from routing through Orca with wrong prices.
+                        pool_type: if update.dex_label == "orca" {
+                            PoolType::ConcentratedLiquidity
+                        } else {
+                            PoolType::ConstantProduct
+                        },
                         fee_bps: 30,
                         dex_label: update.dex_label,
                         clmm_data: None,
