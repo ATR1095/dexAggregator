@@ -14,10 +14,10 @@ type TokenMetadata struct {
 }
 
 var (
-	tokenCache = make(map[string]TokenMetadata)
-	cacheMutex sync.RWMutex
+	tokenCache      = make(map[string]TokenMetadata)
+	cacheMutex      sync.RWMutex
 	fallbackSymbols = map[string]TokenMetadata{
-		"So11111111111111111111111111111111111111112": {Symbol: "SOL", Decimals: 9},
+		"So11111111111111111111111111111111111111112":  {Symbol: "SOL", Decimals: 9},
 		"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": {Symbol: "USDC", Decimals: 6},
 		"Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB": {Symbol: "USDT", Decimals: 6}, // Main USDT
 		"Es9vMFrzaDCSTMdUiJv865tPzXWty3XDsot628au7tvH": {Symbol: "USDT", Decimals: 6}, // Alternate USDT
@@ -48,10 +48,13 @@ func GetTokenDecimals(mint string) uint32 {
 // RefreshTokenMetadata refreshes the cache from multiple reliable sources
 func RefreshTokenMetadata() error {
 	fmt.Println("Metadata: Refreshing token list from all available sources...")
-	
+
+	// Try Jupiter API (Huge list, covers pump.fun and newest tokens)
+	refreshFromJupiter()
+
 	// Try Raydium V3 API (fresh Raydium tokens)
 	refreshFromRaydium()
-	
+
 	// Try GitHub (thousands of tokens, but slightly older)
 	refreshFromGitHub()
 
@@ -144,4 +147,36 @@ func GetDecimalsFromCache(mint string) uint32 {
 		return uint32(t.Decimals)
 	}
 	return GetTokenDecimals(mint)
+}
+
+func refreshFromJupiter() error {
+	url := "https://token.jup.ag/all"
+	fmt.Printf("Metadata: Fetching from Jupiter: %s\n", url)
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	var tokens []struct {
+		Address  string `json:"address"`
+		Symbol   string `json:"symbol"`
+		Name     string `json:"name"`
+		Decimals int    `json:"decimals"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&tokens); err != nil {
+		return err
+	}
+
+	cacheMutex.Lock()
+	defer cacheMutex.Unlock()
+	for _, t := range tokens {
+		tokenCache[t.Address] = TokenMetadata{
+			Symbol:   t.Symbol,
+			Name:     t.Name,
+			Decimals: t.Decimals,
+		}
+	}
+	fmt.Printf("Metadata: Added %d tokens from Jupiter\n", len(tokens))
+	return nil
 }

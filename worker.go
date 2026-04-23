@@ -161,7 +161,7 @@ func (wp *WorkerPool) WorkerRoutine(ctx context.Context, id int) {
 			}
 
 			// Add Token2022 support just in case
-			const Token2022ProgramID = "TokenzQ9kh2QKGjY99v9AAtZAuC2Yyyo6G7oYj9E9sU"
+			const Token2022ProgramID = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 			if update.ProgramID == Token2022ProgramID {
 				if len(update.Data) >= 72 {
 					amount := binary.LittleEndian.Uint64(update.Data[64:72])
@@ -263,28 +263,11 @@ func (wp *WorkerPool) handleVaultUpdate(ctx context.Context, vaultAddr string, a
 
 func (wp *WorkerPool) updatePoolReserves(ctx context.Context, poolData *PoolData) {
 	key := fmt.Sprintf("pool:%s", poolData.Address)
-	symA := GetSymbolFromCache(poolData.TokenA)
-	symB := GetSymbolFromCache(poolData.TokenB)
-
-	// Simple update
-	wp.Redis.HSet(ctx, key, map[string]interface{}{
-		"token_a":    poolData.TokenA,
-		"token_b":    poolData.TokenB,
-		"symbol_a":   symA,
-		"symbol_b":   symB,
-		"decimals_a": GetDecimalsFromCache(poolData.TokenA),
-		"decimals_b": GetDecimalsFromCache(poolData.TokenB),
-		"dex_type":   poolData.DexType,
-	})
 
 	if poolData.ReservesA > 0 || poolData.ReservesB > 0 {
 		wp.Redis.HSet(ctx, key, map[string]interface{}{
 			"reserves_a": poolData.ReservesA,
 			"reserves_b": poolData.ReservesB,
 		})
-	}
-
-	if wp.Registry != nil {
-		wp.Registry.UpdatePoolMetadata(ctx, poolData.Address, poolData.TokenA, poolData.TokenB, symA, symB)
 	}
 }

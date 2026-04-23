@@ -162,7 +162,7 @@ func runGeyserStream(ctx context.Context, url, token string, wp *WorkerPool) err
 				Owner: []string{RaydiumProgramID, OrcaProgramID},
 			},
 			"vaults": {
-				Owner: []string{TokenProgramID},
+				Owner: []string{TokenProgramID, "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"},
 			},
 		},
 		Slots: map[string]*geyser.SubscribeRequestFilterSlots{"all": {}},

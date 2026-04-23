@@ -82,7 +82,7 @@ const (
 	RaydiumProgramID2       = "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8"
 	TokenProgramID          = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
 	TokenProgramID_Standard = "TokenkegQfeZyiNwAJbVDRk64udw67nV8pxE89s2YZ8"
-	OrcaProgramID           = "whirLbMiqtnv6uFv5uWt8f2X76ycWCnHB98S9Anbmcs"
+	OrcaProgramID           = "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
 	RaydiumCPMMProgramID    = "CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C"
 )
 
@@ -210,46 +210,48 @@ func DecodePoolUpdate(programID string, data []byte, slot uint64, poolAddr strin
             DexType:   "raydium",
         }, nil
 
-case RaydiumCPMMProgramID:
-    if len(data) < 232 {
-        return nil, fmt.Errorf("cpmm data too short")
-    }
+    case RaydiumCPMMProgramID:
+        if len(data) < 232 {
+            return nil, fmt.Errorf("cpmm data too short")
+        }
 
-    // CORRECT CPMM OFFSETS:
-    // Mints are at 72 and 104
-    // Vaults are at 168 and 200
-    tokenA := base58.Encode(data[72:104])   // This MUST be the Mint
-    tokenB := base58.Encode(data[104:136])  // This MUST be the Mint
-    vaultA := base58.Encode(data[168:200])  // This is the Vault
-    vaultB := base58.Encode(data[200:232])  // This is the Vault
+        // CORRECT CPMM OFFSETS:
+        // Mints are at 72 and 104
+        // Vaults are at 168 and 200
+        tokenA := base58.Encode(data[72:104])   // This MUST be the Mint
+        tokenB := base58.Encode(data[104:136])  // This MUST be the Mint
+        vaultA := base58.Encode(data[168:200])  // This is the Vault
+        vaultB := base58.Encode(data[200:232])  // This is the Vault
 
-    return &PoolData{
-        Address:   poolAddr,
-        TokenA:    tokenA,
-        TokenB:    tokenB,
-        VaultA:    vaultA,
-        VaultB:    vaultB,
-        DexType:   "raydium_cpmm",
-    }, nil
+        return &PoolData{
+            Address:   poolAddr,
+            TokenA:    tokenA,
+            TokenB:    tokenB,
+            VaultA:    vaultA,
+            VaultB:    vaultB,
+            DexType:   "raydium_cpmm",
+        }, nil
 
-case OrcaProgramID:
-    if len(data) < 165 {
-        return nil, fmt.Errorf("orca data too short")
-    }
-    
-    // CORRECT ORCA WHIRLPOOL OFFSETS:
-    // Mints are at 101 and 133
-    tokenA := base58.Encode(data[101:133]) 
-    tokenB := base58.Encode(data[133:165])
-    
-    // Note: Vaults for Orca are not easily found at fixed offsets 
-    // in the pool state; they are usually separate metadata.
-    return &PoolData{
-        Address: poolAddr,
-        TokenA:  tokenA,
-        TokenB:  tokenB,
-        DexType: "orca",
-    }, nil
+    case OrcaProgramID:
+        // Need at least 245 bytes to reach Token Vault B
+        if len(data) < 245 {
+            return nil, fmt.Errorf("orca data too short")
+        }
+        
+        // CORRECT ORCA WHIRLPOOL OFFSETS:
+        tokenA := base58.Encode(data[101:133]) // baseMint
+        vaultA := base58.Encode(data[133:165]) // baseVault
+        tokenB := base58.Encode(data[181:213]) // quoteMint
+        vaultB := base58.Encode(data[213:245]) // quoteVault
+        
+        return &PoolData{
+            Address: poolAddr,
+            TokenA:  tokenA,
+            TokenB:  tokenB,
+            VaultA:  vaultA,
+            VaultB:  vaultB,
+            DexType: "orca",
+        }, nil
     }
     return nil, fmt.Errorf("unsupported program")
 }
