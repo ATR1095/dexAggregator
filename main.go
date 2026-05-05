@@ -159,10 +159,10 @@ func runGeyserStream(ctx context.Context, url, token string, wp *WorkerPool) err
 	req := &geyser.SubscribeRequest{
 		Accounts: map[string]*geyser.SubscribeRequestFilterAccounts{
 			"dex_programs": {
-				Owner: []string{RaydiumProgramID, OrcaProgramID},
+				Owner: []string{RaydiumProgramID, OrcaProgramID, MeteoraProgramID},
 			},
 			"vaults": {
-				Owner: []string{TokenProgramID, "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"},
+				Owner: []string{TokenProgramID, Token2022ProgramID},
 			},
 		},
 		Slots: map[string]*geyser.SubscribeRequestFilterSlots{"all": {}},

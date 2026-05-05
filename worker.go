@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/binary"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"strconv"
@@ -30,13 +31,14 @@ type WorkerPool struct {
 }
 
 type WorkerUpdate struct {
-	PoolId   string
-	TokenA   string
-	TokenB   string
-	ReserveA uint64
-	ReserveB uint64
-	AmmType  uint32
-	DexType  string
+	PoolId    string
+	TokenA    string
+	TokenB    string
+	ReserveA  uint64
+	ReserveB  uint64
+	AmmType   uint32
+	DexType   string
+	ExtraData []byte
 }
 
 type RawUpdate struct {
@@ -150,22 +152,12 @@ func (wp *WorkerPool) WorkerRoutine(ctx context.Context, id int) {
 			// Log every received update type for debugging
 			// log.Printf("[Worker] Received update for %s (Program: %s, Data: %d bytes)", update.PoolAddr, update.ProgramID, len(update.Data))
 
-			if update.ProgramID == TokenProgramID || update.ProgramID == TokenProgramID_Standard {
+			if update.ProgramID == TokenProgramID || update.ProgramID == Token2022ProgramID {
 				if len(update.Data) >= 72 {
 					amount := binary.LittleEndian.Uint64(update.Data[64:72])
-					wp.handleVaultUpdate(ctx, update.PoolAddr, amount)
+					wp.handleVaultUpdate(ctx, update.PoolAddr, amount, update.ProgramID)
 				} else {
 					log.Printf("[Worker] WARNING: Token account %s data too short: %d", update.PoolAddr, len(update.Data))
-				}
-				continue
-			}
-
-			// Add Token2022 support just in case
-			const Token2022ProgramID = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
-			if update.ProgramID == Token2022ProgramID {
-				if len(update.Data) >= 72 {
-					amount := binary.LittleEndian.Uint64(update.Data[64:72])
-					wp.handleVaultUpdate(ctx, update.PoolAddr, amount)
 				}
 				continue
 			}
@@ -205,7 +197,7 @@ func (wp *WorkerPool) RegisterPoolVaults(poolAddr, vaultA, vaultB string) {
 	log.Printf("[Worker] MANUALLY REGISTERED VAULTS for pool %s: A=%s, B=%s", poolAddr, vaultA, vaultB)
 }
 
-func (wp *WorkerPool) handleVaultUpdate(ctx context.Context, vaultAddr string, amount uint64) {
+func (wp *WorkerPool) handleVaultUpdate(ctx context.Context, vaultAddr string, amount uint64, programID string) {
 	wp.VaultMutex.RLock()
 	mapping, ok := wp.VaultToPool[vaultAddr]
 	wp.VaultMutex.RUnlock()
@@ -224,12 +216,14 @@ func (wp *WorkerPool) handleVaultUpdate(ctx context.Context, vaultAddr string, a
 	}
 
 	field := "reserves_a"
+	progField := "token_program_a"
 	if side == "B" {
 		field = "reserves_b"
+		progField = "token_program_b"
 	}
 
 	key := fmt.Sprintf("pool:%s", poolAddr)
-	err := wp.Redis.HSet(ctx, key, field, fmt.Sprintf("%d", amount)).Err()
+	err := wp.Redis.HSet(ctx, key, field, fmt.Sprintf("%d", amount), progField, programID).Err()
 	if err != nil {
 		log.Printf("[Worker] Failed to update %s for %s: %v", field, poolAddr, err)
 		return
@@ -247,13 +241,56 @@ func (wp *WorkerPool) handleVaultUpdate(ctx context.Context, vaultAddr string, a
 	resA, _ := strconv.ParseUint(data["reserves_a"], 10, 64)
 	resB, _ := strconv.ParseUint(data["reserves_b"], 10, 64)
 
+	// Derive AmmType and ExtraData from Redis data (consistent with grpc_server.go)
+	dexLabel := data["dex_type"]
+	var extraData []byte
+	ammType := 0
+	if dexLabel == "orca" {
+		ammType = 1
+		sqrtStr := data["sqrt_price"]
+		liqStr := data["liquidity"]
+		tickStr := data["current_tick"]
+		if sqrtStr != "" && liqStr != "" {
+			sqrtBytes, _ := hex.DecodeString(sqrtStr)
+			liqBytes, _ := hex.DecodeString(liqStr)
+			tickVal, _ := strconv.ParseInt(tickStr, 10, 32)
+			tickBytes := make([]byte, 4)
+			binary.LittleEndian.PutUint32(tickBytes, uint32(tickVal))
+			spacingVal, _ := strconv.ParseUint(data["tick_spacing"], 10, 16)
+			spacingBytes := make([]byte, 2)
+			binary.LittleEndian.PutUint16(spacingBytes, uint16(spacingVal))
+			extraData = append(extraData, sqrtBytes...)
+			extraData = append(extraData, liqBytes...)
+			extraData = append(extraData, tickBytes...)
+			extraData = append(extraData, spacingBytes...)
+		}
+	} else if dexLabel == "meteora" {
+		ammType = 2
+		tickStr := data["current_tick"]
+		stepStr := data["tick_spacing"]
+		tickVal, _ := strconv.ParseInt(tickStr, 10, 32)
+		stepVal, _ := strconv.ParseUint(stepStr, 10, 16)
+		baseVal, _ := strconv.ParseUint(data["base_factor"], 10, 16)
+		tickBytes := make([]byte, 4)
+		binary.LittleEndian.PutUint32(tickBytes, uint32(tickVal))
+		stepBytes := make([]byte, 2)
+		binary.LittleEndian.PutUint16(stepBytes, uint16(stepVal))
+		baseBytes := make([]byte, 2)
+		binary.LittleEndian.PutUint16(baseBytes, uint16(baseVal))
+		extraData = append(extraData, tickBytes...)
+		extraData = append(extraData, stepBytes...)
+		extraData = append(extraData, baseBytes...)
+	}
+
 	wp.Broadcast(&WorkerUpdate{
-		PoolId:   poolAddr,
-		TokenA:   data["token_a"],
-		TokenB:   data["token_b"],
-		ReserveA: resA,
-		ReserveB: resB,
-		DexType:  data["dex_type"],
+		PoolId:    poolAddr,
+		TokenA:    data["token_a"],
+		TokenB:    data["token_b"],
+		ReserveA:  resA,
+		ReserveB:  resB,
+		DexType:   data["dex_type"],
+		AmmType:   uint32(ammType),
+		ExtraData: extraData,
 	})
 	
 	// Terminal logging for visibility
@@ -264,10 +301,42 @@ func (wp *WorkerPool) handleVaultUpdate(ctx context.Context, vaultAddr string, a
 func (wp *WorkerPool) updatePoolReserves(ctx context.Context, poolData *PoolData) {
 	key := fmt.Sprintf("pool:%s", poolData.Address)
 
-	if poolData.ReservesA > 0 || poolData.ReservesB > 0 {
-		wp.Redis.HSet(ctx, key, map[string]interface{}{
-			"reserves_a": poolData.ReservesA,
-			"reserves_b": poolData.ReservesB,
-		})
+	fields := map[string]interface{}{
+		"reserves_a": poolData.ReservesA,
+		"reserves_b": poolData.ReservesB,
 	}
+
+	if poolData.TokenA != "" { fields["token_a"] = poolData.TokenA }
+	if poolData.TokenB != "" { fields["token_b"] = poolData.TokenB }
+	if poolData.DexType != "" { fields["dex_type"] = poolData.DexType }
+	if poolData.DecimalsA > 0 { fields["decimals_a"] = poolData.DecimalsA }
+	if poolData.DecimalsB > 0 { fields["decimals_b"] = poolData.DecimalsB }
+
+	if poolData.SqrtPriceX64 != "" {
+		fields["sqrt_price"] = poolData.SqrtPriceX64
+		fields["liquidity"] = poolData.Liquidity
+		fields["current_tick"] = poolData.CurrentTick
+		fields["tick_spacing"] = poolData.TickSpacing
+		if poolData.BaseFactor > 0 {
+			fields["base_factor"] = poolData.BaseFactor
+		}
+	}
+
+	for name, addr := range poolData.Accounts {
+		fields["acc:"+name] = addr
+	}
+
+	wp.Redis.HSet(ctx, key, fields)
+	
+	// Broadcast immediately so SOR gets metadata even if reserves haven't changed yet
+	wp.Broadcast(&WorkerUpdate{
+		PoolId:   poolData.Address,
+		TokenA:   poolData.TokenA,
+		TokenB:   poolData.TokenB,
+		ReserveA: poolData.ReservesA,
+		ReserveB: poolData.ReservesB,
+		DexType:  poolData.DexType,
+		AmmType:  poolData.AmmType,
+		ExtraData: poolData.ExtraData,
+	})
 }

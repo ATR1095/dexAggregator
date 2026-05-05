@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v3.6.1
-// source: proto/oracle.proto
+// source: oracle.proto
 
 package proto
 
@@ -29,7 +29,7 @@ type Empty struct {
 
 func (x *Empty) Reset() {
 	*x = Empty{}
-	mi := &file_proto_oracle_proto_msgTypes[0]
+	mi := &file_oracle_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -41,7 +41,7 @@ func (x *Empty) String() string {
 func (*Empty) ProtoMessage() {}
 
 func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_oracle_proto_msgTypes[0]
+	mi := &file_oracle_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -54,7 +54,7 @@ func (x *Empty) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Empty.ProtoReflect.Descriptor instead.
 func (*Empty) Descriptor() ([]byte, []int) {
-	return file_proto_oracle_proto_rawDescGZIP(), []int{0}
+	return file_oracle_proto_rawDescGZIP(), []int{0}
 }
 
 type PoolList struct {
@@ -66,7 +66,7 @@ type PoolList struct {
 
 func (x *PoolList) Reset() {
 	*x = PoolList{}
-	mi := &file_proto_oracle_proto_msgTypes[1]
+	mi := &file_oracle_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -78,7 +78,7 @@ func (x *PoolList) String() string {
 func (*PoolList) ProtoMessage() {}
 
 func (x *PoolList) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_oracle_proto_msgTypes[1]
+	mi := &file_oracle_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -91,12 +91,56 @@ func (x *PoolList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PoolList.ProtoReflect.Descriptor instead.
 func (*PoolList) Descriptor() ([]byte, []int) {
-	return file_proto_oracle_proto_rawDescGZIP(), []int{1}
+	return file_oracle_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PoolList) GetPoolIds() []string {
 	if x != nil {
 		return x.PoolIds
+	}
+	return nil
+}
+
+type PoolUpdateList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Updates       []*PoolUpdate          `protobuf:"bytes,1,rep,name=updates,proto3" json:"updates,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PoolUpdateList) Reset() {
+	*x = PoolUpdateList{}
+	mi := &file_oracle_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PoolUpdateList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PoolUpdateList) ProtoMessage() {}
+
+func (x *PoolUpdateList) ProtoReflect() protoreflect.Message {
+	mi := &file_oracle_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PoolUpdateList.ProtoReflect.Descriptor instead.
+func (*PoolUpdateList) Descriptor() ([]byte, []int) {
+	return file_oracle_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PoolUpdateList) GetUpdates() []*PoolUpdate {
+	if x != nil {
+		return x.Updates
 	}
 	return nil
 }
@@ -110,7 +154,7 @@ type PoolRequest struct {
 
 func (x *PoolRequest) Reset() {
 	*x = PoolRequest{}
-	mi := &file_proto_oracle_proto_msgTypes[2]
+	mi := &file_oracle_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -122,7 +166,7 @@ func (x *PoolRequest) String() string {
 func (*PoolRequest) ProtoMessage() {}
 
 func (x *PoolRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_oracle_proto_msgTypes[2]
+	mi := &file_oracle_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -135,7 +179,7 @@ func (x *PoolRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PoolRequest.ProtoReflect.Descriptor instead.
 func (*PoolRequest) Descriptor() ([]byte, []int) {
-	return file_proto_oracle_proto_rawDescGZIP(), []int{2}
+	return file_oracle_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *PoolRequest) GetPoolId() string {
@@ -154,7 +198,7 @@ type StreamRequest struct {
 
 func (x *StreamRequest) Reset() {
 	*x = StreamRequest{}
-	mi := &file_proto_oracle_proto_msgTypes[3]
+	mi := &file_oracle_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -166,7 +210,7 @@ func (x *StreamRequest) String() string {
 func (*StreamRequest) ProtoMessage() {}
 
 func (x *StreamRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_oracle_proto_msgTypes[3]
+	mi := &file_oracle_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -179,7 +223,7 @@ func (x *StreamRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StreamRequest.ProtoReflect.Descriptor instead.
 func (*StreamRequest) Descriptor() ([]byte, []int) {
-	return file_proto_oracle_proto_rawDescGZIP(), []int{3}
+	return file_oracle_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *StreamRequest) GetDexTypes() []string {
@@ -203,13 +247,14 @@ type PoolUpdate struct {
 	DecimalsA     uint32                 `protobuf:"varint,10,opt,name=decimals_a,json=decimalsA,proto3" json:"decimals_a,omitempty"`
 	DecimalsB     uint32                 `protobuf:"varint,11,opt,name=decimals_b,json=decimalsB,proto3" json:"decimals_b,omitempty"`
 	DexLabel      string                 `protobuf:"bytes,12,opt,name=dex_label,json=dexLabel,proto3" json:"dex_label,omitempty"`
+	Accounts      map[string]string      `protobuf:"bytes,13,rep,name=accounts,proto3" json:"accounts,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *PoolUpdate) Reset() {
 	*x = PoolUpdate{}
-	mi := &file_proto_oracle_proto_msgTypes[4]
+	mi := &file_oracle_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -221,7 +266,7 @@ func (x *PoolUpdate) String() string {
 func (*PoolUpdate) ProtoMessage() {}
 
 func (x *PoolUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_oracle_proto_msgTypes[4]
+	mi := &file_oracle_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -234,7 +279,7 @@ func (x *PoolUpdate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PoolUpdate.ProtoReflect.Descriptor instead.
 func (*PoolUpdate) Descriptor() ([]byte, []int) {
-	return file_proto_oracle_proto_rawDescGZIP(), []int{4}
+	return file_oracle_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *PoolUpdate) GetPoolId() string {
@@ -321,18 +366,27 @@ func (x *PoolUpdate) GetDexLabel() string {
 	return ""
 }
 
-var File_proto_oracle_proto protoreflect.FileDescriptor
+func (x *PoolUpdate) GetAccounts() map[string]string {
+	if x != nil {
+		return x.Accounts
+	}
+	return nil
+}
 
-const file_proto_oracle_proto_rawDesc = "" +
+var File_oracle_proto protoreflect.FileDescriptor
+
+const file_oracle_proto_rawDesc = "" +
 	"\n" +
-	"\x12proto/oracle.proto\x12\x06oracle\"\a\n" +
+	"\foracle.proto\x12\x06oracle\"\a\n" +
 	"\x05Empty\"%\n" +
 	"\bPoolList\x12\x19\n" +
-	"\bpool_ids\x18\x01 \x03(\tR\apoolIds\"&\n" +
+	"\bpool_ids\x18\x01 \x03(\tR\apoolIds\">\n" +
+	"\x0ePoolUpdateList\x12,\n" +
+	"\aupdates\x18\x01 \x03(\v2\x12.oracle.PoolUpdateR\aupdates\"&\n" +
 	"\vPoolRequest\x12\x17\n" +
 	"\apool_id\x18\x01 \x01(\tR\x06poolId\",\n" +
 	"\rStreamRequest\x12\x1b\n" +
-	"\tdex_types\x18\x01 \x03(\tR\bdexTypes\"\xdc\x02\n" +
+	"\tdex_types\x18\x01 \x03(\tR\bdexTypes\"\xd7\x03\n" +
 	"\n" +
 	"PoolUpdate\x12\x17\n" +
 	"\apool_id\x18\x01 \x01(\tR\x06poolId\x12\x17\n" +
@@ -350,63 +404,74 @@ const file_proto_oracle_proto_rawDesc = "" +
 	" \x01(\rR\tdecimalsA\x12\x1d\n" +
 	"\n" +
 	"decimals_b\x18\v \x01(\rR\tdecimalsB\x12\x1b\n" +
-	"\tdex_label\x18\f \x01(\tR\bdexLabel2\x7f\n" +
+	"\tdex_label\x18\f \x01(\tR\bdexLabel\x12<\n" +
+	"\baccounts\x18\r \x03(\v2 .oracle.PoolUpdate.AccountsEntryR\baccounts\x1a;\n" +
+	"\rAccountsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012\xbb\x01\n" +
 	"\vPriceOracle\x12:\n" +
 	"\x0fGetPoolReserves\x12\x13.oracle.PoolRequest\x1a\x12.oracle.PoolUpdate\x124\n" +
-	"\x11GetMonitoredPools\x12\r.oracle.Empty\x1a\x10.oracle.PoolListB\x1aZ\x18priceOracleService/protob\x06proto3"
+	"\x11GetMonitoredPools\x12\r.oracle.Empty\x1a\x10.oracle.PoolList\x12:\n" +
+	"\x11GetAllPoolUpdates\x12\r.oracle.Empty\x1a\x16.oracle.PoolUpdateListB\x1aZ\x18priceOracleService/protob\x06proto3"
 
 var (
-	file_proto_oracle_proto_rawDescOnce sync.Once
-	file_proto_oracle_proto_rawDescData []byte
+	file_oracle_proto_rawDescOnce sync.Once
+	file_oracle_proto_rawDescData []byte
 )
 
-func file_proto_oracle_proto_rawDescGZIP() []byte {
-	file_proto_oracle_proto_rawDescOnce.Do(func() {
-		file_proto_oracle_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_oracle_proto_rawDesc), len(file_proto_oracle_proto_rawDesc)))
+func file_oracle_proto_rawDescGZIP() []byte {
+	file_oracle_proto_rawDescOnce.Do(func() {
+		file_oracle_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_oracle_proto_rawDesc), len(file_oracle_proto_rawDesc)))
 	})
-	return file_proto_oracle_proto_rawDescData
+	return file_oracle_proto_rawDescData
 }
 
-var file_proto_oracle_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
-var file_proto_oracle_proto_goTypes = []any{
-	(*Empty)(nil),         // 0: oracle.Empty
-	(*PoolList)(nil),      // 1: oracle.PoolList
-	(*PoolRequest)(nil),   // 2: oracle.PoolRequest
-	(*StreamRequest)(nil), // 3: oracle.StreamRequest
-	(*PoolUpdate)(nil),    // 4: oracle.PoolUpdate
+var file_oracle_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_oracle_proto_goTypes = []any{
+	(*Empty)(nil),          // 0: oracle.Empty
+	(*PoolList)(nil),       // 1: oracle.PoolList
+	(*PoolUpdateList)(nil), // 2: oracle.PoolUpdateList
+	(*PoolRequest)(nil),    // 3: oracle.PoolRequest
+	(*StreamRequest)(nil),  // 4: oracle.StreamRequest
+	(*PoolUpdate)(nil),     // 5: oracle.PoolUpdate
+	nil,                    // 6: oracle.PoolUpdate.AccountsEntry
 }
-var file_proto_oracle_proto_depIdxs = []int32{
-	2, // 0: oracle.PriceOracle.GetPoolReserves:input_type -> oracle.PoolRequest
-	0, // 1: oracle.PriceOracle.GetMonitoredPools:input_type -> oracle.Empty
-	4, // 2: oracle.PriceOracle.GetPoolReserves:output_type -> oracle.PoolUpdate
-	1, // 3: oracle.PriceOracle.GetMonitoredPools:output_type -> oracle.PoolList
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+var file_oracle_proto_depIdxs = []int32{
+	5, // 0: oracle.PoolUpdateList.updates:type_name -> oracle.PoolUpdate
+	6, // 1: oracle.PoolUpdate.accounts:type_name -> oracle.PoolUpdate.AccountsEntry
+	3, // 2: oracle.PriceOracle.GetPoolReserves:input_type -> oracle.PoolRequest
+	0, // 3: oracle.PriceOracle.GetMonitoredPools:input_type -> oracle.Empty
+	0, // 4: oracle.PriceOracle.GetAllPoolUpdates:input_type -> oracle.Empty
+	5, // 5: oracle.PriceOracle.GetPoolReserves:output_type -> oracle.PoolUpdate
+	1, // 6: oracle.PriceOracle.GetMonitoredPools:output_type -> oracle.PoolList
+	2, // 7: oracle.PriceOracle.GetAllPoolUpdates:output_type -> oracle.PoolUpdateList
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_proto_oracle_proto_init() }
-func file_proto_oracle_proto_init() {
-	if File_proto_oracle_proto != nil {
+func init() { file_oracle_proto_init() }
+func file_oracle_proto_init() {
+	if File_oracle_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_oracle_proto_rawDesc), len(file_proto_oracle_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_oracle_proto_rawDesc), len(file_oracle_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_oracle_proto_goTypes,
-		DependencyIndexes: file_proto_oracle_proto_depIdxs,
-		MessageInfos:      file_proto_oracle_proto_msgTypes,
+		GoTypes:           file_oracle_proto_goTypes,
+		DependencyIndexes: file_oracle_proto_depIdxs,
+		MessageInfos:      file_oracle_proto_msgTypes,
 	}.Build()
-	File_proto_oracle_proto = out.File
-	file_proto_oracle_proto_goTypes = nil
-	file_proto_oracle_proto_depIdxs = nil
+	File_oracle_proto = out.File
+	file_oracle_proto_goTypes = nil
+	file_oracle_proto_depIdxs = nil
 }

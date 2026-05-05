@@ -157,6 +157,52 @@ func (ji *JupiterImporter) ImportTopPools(ctx context.Context, wp *WorkerPool) e
 		log.Printf("JupiterImporter: Error fetching Orca API: %v", errOrca)
 	}
 
+	// Fetch top 50 Meteora DLMM Pools
+	meteoraURL := "https://dlmm.datapi.meteora.ag/pools?page=1&page_size=50&sort_by=tvl:desc"
+	log.Printf("JupiterImporter: Fetching from Meteora API: %s\n", meteoraURL)
+	
+	reqMet, _ := http.NewRequest("GET", meteoraURL, nil)
+	reqMet.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+	
+	respMet, errMet := http.DefaultClient.Do(reqMet)
+	if errMet == nil {
+		defer respMet.Body.Close()
+		if respMet.StatusCode != http.StatusOK {
+			log.Printf("JupiterImporter: Meteora API returned status %d", respMet.StatusCode)
+		}
+		var metResult struct {
+			Data []struct {
+				Address string  `json:"address"`
+				TokenX  struct{ Address string `json:"address"`; Symbol string `json:"symbol"`; Decimals uint32 `json:"decimals"` } `json:"token_x"`
+				TokenY  struct{ Address string `json:"address"`; Symbol string `json:"symbol"`; Decimals uint32 `json:"decimals"` } `json:"token_y"`
+				ReserveX string `json:"reserve_x"`
+				ReserveY string `json:"reserve_y"`
+				TVL      float64 `json:"tvl"`
+			} `json:"data"`
+		}
+		if err := json.NewDecoder(respMet.Body).Decode(&metResult); err == nil {
+			for _, p := range metResult.Data {
+				poolEntries[p.Address] = poolMetadata{
+					MintA:     p.TokenX.Address,
+					MintB:     p.TokenY.Address,
+					SymbolA:   p.TokenX.Symbol,
+					SymbolB:   p.TokenY.Symbol,
+					TVL:       p.TVL,
+					VaultA:    p.ReserveX,
+					VaultB:    p.ReserveY,
+					DexType:   "meteora",
+					DecimalsA: p.TokenX.Decimals,
+					DecimalsB: p.TokenY.Decimals,
+				}
+			}
+			log.Printf("JupiterImporter: Added top %d Meteora DLMM pools", len(metResult.Data))
+		} else {
+			log.Printf("JupiterImporter: Error parsing Meteora response: %v", err)
+		}
+	} else {
+		log.Printf("JupiterImporter: Error fetching Meteora API: %v", errMet)
+	}
+
 	count := 0
 	var seededPools []string
 	for id, m := range poolEntries {

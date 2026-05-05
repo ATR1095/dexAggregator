@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v3.6.1
-// source: proto/oracle.proto
+// source: oracle.proto
 
 package proto
 
@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	PriceOracle_GetPoolReserves_FullMethodName   = "/oracle.PriceOracle/GetPoolReserves"
 	PriceOracle_GetMonitoredPools_FullMethodName = "/oracle.PriceOracle/GetMonitoredPools"
+	PriceOracle_GetAllPoolUpdates_FullMethodName = "/oracle.PriceOracle/GetAllPoolUpdates"
 )
 
 // PriceOracleClient is the client API for PriceOracle service.
@@ -29,6 +30,7 @@ const (
 type PriceOracleClient interface {
 	GetPoolReserves(ctx context.Context, in *PoolRequest, opts ...grpc.CallOption) (*PoolUpdate, error)
 	GetMonitoredPools(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*PoolList, error)
+	GetAllPoolUpdates(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*PoolUpdateList, error)
 }
 
 type priceOracleClient struct {
@@ -59,12 +61,23 @@ func (c *priceOracleClient) GetMonitoredPools(ctx context.Context, in *Empty, op
 	return out, nil
 }
 
+func (c *priceOracleClient) GetAllPoolUpdates(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*PoolUpdateList, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PoolUpdateList)
+	err := c.cc.Invoke(ctx, PriceOracle_GetAllPoolUpdates_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PriceOracleServer is the server API for PriceOracle service.
 // All implementations must embed UnimplementedPriceOracleServer
 // for forward compatibility.
 type PriceOracleServer interface {
 	GetPoolReserves(context.Context, *PoolRequest) (*PoolUpdate, error)
 	GetMonitoredPools(context.Context, *Empty) (*PoolList, error)
+	GetAllPoolUpdates(context.Context, *Empty) (*PoolUpdateList, error)
 	mustEmbedUnimplementedPriceOracleServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedPriceOracleServer) GetPoolReserves(context.Context, *PoolRequ
 }
 func (UnimplementedPriceOracleServer) GetMonitoredPools(context.Context, *Empty) (*PoolList, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetMonitoredPools not implemented")
+}
+func (UnimplementedPriceOracleServer) GetAllPoolUpdates(context.Context, *Empty) (*PoolUpdateList, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAllPoolUpdates not implemented")
 }
 func (UnimplementedPriceOracleServer) mustEmbedUnimplementedPriceOracleServer() {}
 func (UnimplementedPriceOracleServer) testEmbeddedByValue()                     {}
@@ -138,6 +154,24 @@ func _PriceOracle_GetMonitoredPools_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PriceOracle_GetAllPoolUpdates_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PriceOracleServer).GetAllPoolUpdates(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PriceOracle_GetAllPoolUpdates_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PriceOracleServer).GetAllPoolUpdates(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PriceOracle_ServiceDesc is the grpc.ServiceDesc for PriceOracle service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -153,7 +187,11 @@ var PriceOracle_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetMonitoredPools",
 			Handler:    _PriceOracle_GetMonitoredPools_Handler,
 		},
+		{
+			MethodName: "GetAllPoolUpdates",
+			Handler:    _PriceOracle_GetAllPoolUpdates_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/oracle.proto",
+	Metadata: "oracle.proto",
 }
