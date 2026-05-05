@@ -19,6 +19,22 @@ impl TokenGraph {
 
     pub fn build(&mut self, cache: &GlobalPoolCache) {
         for pool in cache.pools.iter() {
+            // Only include pools that the instruction builder (quoter.rs) supports.
+            // Currently supported: Orca Whirlpool and Meteora DLMM.
+            // Raydium and others are skipped to prevent "InstructionError 101" or missing account errors.
+            if pool.dex_label != "orca" && pool.dex_label != "meteora" {
+                debug!("Graph: Skipping unsupported DEX pool {} ({})", pool.id, pool.dex_label);
+                continue;
+            }
+            
+            // Ensure pool has necessary accounts for building instructions
+            if pool.dex_label == "orca" && (!pool.accounts.contains_key("pool_vault_a") || !pool.accounts.contains_key("pool_vault_b")) {
+                continue;
+            }
+            if pool.dex_label == "meteora" && (!pool.accounts.contains_key("reserve_x") || !pool.accounts.contains_key("reserve_y")) {
+                continue;
+            }
+
             let node_a = *self.nodes.entry(pool.token_a.clone()).or_insert_with(|| {
                 self.graph.add_node(pool.token_a.clone())
             });
@@ -99,6 +115,7 @@ impl TokenGraph {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::collections::HashMap;
     use crate::cache::{GlobalPoolCache, PoolState, PoolType};
 
     fn make_pool(id: &str, token_a: &str, token_b: &str) -> PoolState {
@@ -114,8 +131,15 @@ mod tests {
             reserve_b: 1_000_000,
             pool_type: PoolType::ConstantProduct,
             fee_bps: 30,
-            dex_label: "test".to_string(),
+            dex_label: "orca".to_string(),
             clmm_data: None,
+            lb_bin_data: None,
+            accounts: {
+                let mut h = HashMap::new();
+                h.insert("pool_vault_a".to_string(), "vault_a".to_string());
+                h.insert("pool_vault_b".to_string(), "vault_b".to_string());
+                h
+            },
         }
     }
 

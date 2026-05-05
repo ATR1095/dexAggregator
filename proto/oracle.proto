@@ -6,12 +6,17 @@ option go_package = "priceOracleService/proto";
 service PriceOracle {
   rpc GetPoolReserves (PoolRequest) returns (PoolUpdate);
   rpc GetMonitoredPools (Empty) returns (PoolList);
+  rpc GetAllPoolUpdates (Empty) returns (PoolUpdateList);
 }
 
 message Empty {}
 
 message PoolList {
   repeated string pool_ids = 1;
+}
+
+message PoolUpdateList {
+  repeated PoolUpdate updates = 1;
 }
 
 message PoolRequest {
@@ -35,4 +40,5 @@ message PoolUpdate {
   uint32 decimals_a = 10;
   uint32 decimals_b = 11;
   string dex_label = 12;
+  map<string, string> accounts = 13;
 }
