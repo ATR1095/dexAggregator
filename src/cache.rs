@@ -95,25 +95,39 @@ impl GlobalPoolCache {
 
     // 1. Only insert symbols if they aren't "UNKNOWN" 
     // 2. Only insert if they don't already exist (prevent overwriting good data with bad)
-    if sym_a != "UNKNOWN" && !self.symbols.contains_key(&sym_a) {
+    if !sym_a.is_empty() && sym_a != "UNKNOWN" && !self.symbols.contains_key(&sym_a) {
         log::info!("SOR: Discovered token {} ({})", sym_a, state.token_a);
         self.symbols.insert(sym_a, state.token_a.clone());
     }
-    if sym_b != "UNKNOWN" && !self.symbols.contains_key(&sym_b) {
+    if !sym_b.is_empty() && sym_b != "UNKNOWN" && !self.symbols.contains_key(&sym_b) {
         log::info!("SOR: Discovered token {} ({})", sym_b, state.token_b);
         self.symbols.insert(sym_b, state.token_b.clone());
     }
 
-    // Always keep mint-to-symbol and decimals updated 
-    // but consider adding a check to ensure state.token_a is actually a valid mint length
+    // Always keep mint-to-symbol and decimals updated, but PROTECT against bad data
     if state.token_a.len() > 30 {
-        self.mints.insert(state.token_a.clone(), state.symbol_a.clone());
-        self.decimals.insert(state.token_a.clone(), state.decimals_a);
+        // Only update symbol if it's valid
+        if !state.symbol_a.is_empty() && state.symbol_a != "UNKNOWN" {
+            self.mints.insert(state.token_a.clone(), state.symbol_a.clone());
+        }
+        
+        // Only update decimals if they are reasonable (Standard tokens are 6, 9, 18)
+        // Values like 76, 128, 192 from the Oracle are filtered out.
+        if state.decimals_a <= 24 {
+            self.decimals.insert(state.token_a.clone(), state.decimals_a);
+        }
     }
     
     if state.token_b.len() > 30 {
-        self.mints.insert(state.token_b.clone(), state.symbol_b.clone());
-        self.decimals.insert(state.token_b.clone(), state.decimals_b);
+        // Only update symbol if it's valid
+        if !state.symbol_b.is_empty() && state.symbol_b != "UNKNOWN" {
+            self.mints.insert(state.token_b.clone(), state.symbol_b.clone());
+        }
+
+        // Only update decimals if they are reasonable
+        if state.decimals_b <= 24 {
+            self.decimals.insert(state.token_b.clone(), state.decimals_b);
+        }
     }
 
     if let Some(prog_a) = state.accounts.get("token_program_a") {
@@ -149,6 +163,12 @@ impl GlobalPoolCache {
         self.decimals.get(mint).map(|d| *d.value()).unwrap_or(0)
     }
 
+    pub fn get_token_info(&self, mint: &str) -> (String, u32) {
+        let symbol = self.get_symbol_by_mint(mint);
+        let decimals = self.get_decimals(mint);
+        (symbol, decimals)
+    }
+
     pub fn get_pool(&self, id: &str) -> Option<Arc<PoolState>> {
         self.pools.get(id).map(|p| p.value().clone())
     }
@@ -159,12 +179,7 @@ impl GlobalPoolCache {
             .unwrap_or_default();
 
         if symbol.is_empty() || symbol == "UNKNOWN" {
-            // Return truncated mint if symbol not found or is restricted
-            if mint.len() > 8 {
-                format!("{}...", &mint[..8])
-            } else {
-                mint.to_string()
-            }
+            "UNKNOWN".to_string()
         } else {
             symbol
         }
@@ -208,5 +223,64 @@ mod tests {
         
         let lookup_key_2 = "USDC".to_uppercase();
         assert_eq!(cache.symbols.get(&lookup_key_2).map(|m| m.value().clone()), Some("mintB".to_string()));
+    }
+
+    #[test]
+    fn test_metadata_hardening() {
+        let cache = GlobalPoolCache::new();
+        let mint = "So11111111111111111111111111111111111111112".to_string();
+        
+        // 1. Seed with good data
+        cache.mints.insert(mint.clone(), "SOL".to_string());
+        cache.decimals.insert(mint.clone(), 9);
+        
+        // 2. Try to update with "bad" data from a pool
+        let bad_state = PoolState {
+            id: "bad_pool".to_string(),
+            token_a: mint.clone(),
+            token_b: "other_mint_longer_than_30_chars_xxxxxxxx".to_string(),
+            symbol_a: "UNKNOWN".to_string(), // Bad symbol
+            symbol_b: "OTHER".to_string(),
+            decimals_a: 128,                 // Garbage decimals
+            decimals_b: 6,
+            reserve_a: 100,
+            reserve_b: 100,
+            pool_type: PoolType::ConstantProduct,
+            fee_bps: 30,
+            dex_label: "test".to_string(),
+            clmm_data: None,
+            lb_bin_data: None,
+            accounts: HashMap::new(),
+        };
+        
+        cache.update_pool("bad_pool".to_string(), bad_state);
+        
+        // 3. Verify that the good data was NOT overwritten
+        assert_eq!(cache.get_symbol_by_mint(&mint), "SOL");
+        assert_eq!(cache.get_decimals(&mint), 9);
+        
+        // 4. Try to update with partially good data
+        let better_state = PoolState {
+            id: "better_pool".to_string(),
+            token_a: mint.clone(),
+            token_b: "other_mint_longer_than_30_chars_xxxxxxxx".to_string(),
+            symbol_a: "wSOL".to_string(), // Better symbol
+            symbol_b: "OTHER".to_string(),
+            decimals_a: 9,                // Good decimals
+            decimals_b: 6,
+            reserve_a: 100,
+            reserve_b: 100,
+            pool_type: PoolType::ConstantProduct,
+            fee_bps: 30,
+            dex_label: "test".to_string(),
+            clmm_data: None,
+            lb_bin_data: None,
+            accounts: HashMap::new(),
+        };
+        
+        cache.update_pool("better_pool".to_string(), better_state);
+        
+        // 5. Verify that valid new symbol IS updated
+        assert_eq!(cache.get_symbol_by_mint(&mint), "wSOL");
     }
 }
