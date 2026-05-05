@@ -1,138 +1,115 @@
-[2026-05-05T04:45:25Z INFO  SOR] SOR gRPC Server listening on 127.0.0.1:50052
-[2026-05-05T04:45:30Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:45:30Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:45:35Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:45:35Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:45:40Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:45:40Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:45:45Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:45:45Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:45:50Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:45:50Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:45:56Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:45:56Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:01Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:01Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:06Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:06Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:11Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:11Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:16Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:16Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:21Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:21Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:26Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:26Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:31Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:31Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:36Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:36Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:41Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:41Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:46Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:46Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:51Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:51Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:46:56Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:46:56Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:01Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:01Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:06Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:06Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:11Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:11Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:16Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:16Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:21Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:21Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:26Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:26Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:31Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:31Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:36Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:36Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:41Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:41Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:46Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:46Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:51Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:51Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:47:56Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:47:56Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:01Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:01Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:06Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:06Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:11Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:11Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:16Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:16Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:21Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:21Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:26Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:26Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:31Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:31Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:36Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:36Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:41Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:41Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:46Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:46Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:51Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:51Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:48:56Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:48:56Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:49:01Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:49:01Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:49:06Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:49:06Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:49:11Z INFO  SOR] SOR: Received 157 updates from Oracle
-[2026-05-05T04:49:11Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
-[2026-05-05T04:49:16Z WARN  SOR] SOR: Failed to connect to Oracle: transport error
-[2026-05-05T04:49:22Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:49:22Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:49:27Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:49:27Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:49:32Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:49:32Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:49:37Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:49:37Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:49:42Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:49:42Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:49:47Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:49:47Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:49:52Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:49:52Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:49:57Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:49:57Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:02Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:02Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:07Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:07Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:12Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:12Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:17Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:17Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:22Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:22Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:27Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:27Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:32Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:32Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:37Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:37Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:42Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:42Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:47Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:47Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:52Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:52Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:50:57Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:50:57Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:51:02Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:51:02Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:51:07Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:51:07Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
-[2026-05-05T04:51:12Z INFO  SOR] SOR: Received 160 updates from Oracle
-[2026-05-05T04:51:12Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:29:03Z INFO  SOR] SOR gRPC Server listening on 127.0.0.1:50052
+[2026-05-05T05:29:08Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:29:08Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:29:13Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:29:13Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:29:18Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:29:18Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:29:23Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:29:23Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:29:28Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:29:28Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:29:33Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:29:33Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:29:38Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:29:38Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:29:43Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:29:43Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:29:48Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:29:48Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:29:53Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:29:53Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:29:58Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:29:58Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:03Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:04Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:09Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:09Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:14Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:14Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:19Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:19Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:24Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:24Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:29Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:29Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:34Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:34Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:39Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:39Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:44Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:44Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:49Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:49Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:54Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:54Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:30:59Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:30:59Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:31:04Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:31:04Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:31:09Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:31:09Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:31:14Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:31:14Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:31:19Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:31:19Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:31:24Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:31:24Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:31:29Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:31:29Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:31:34Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:31:34Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:31:39Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:31:39Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:31:45Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:31:45Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:31:50Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:31:50Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:31:55Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:31:55Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:00Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:00Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:05Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:05Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:10Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:10Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:15Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:15Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:20Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:20Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:25Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:25Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:30Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:30Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:35Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:35Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:40Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:40Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:45Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:45Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:50Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:50Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:32:55Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:32:55Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:33:00Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:33:00Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:33:05Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:33:05Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:33:10Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:33:10Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:33:15Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:33:15Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:33:20Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:33:20Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:33:25Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:33:25Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:33:30Z WARN  SOR] SOR: Failed to connect to Oracle: transport error
+[2026-05-05T05:33:35Z WARN  SOR] SOR: Failed to connect to Oracle: transport error
+[2026-05-05T05:33:40Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:33:40Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:33:45Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:33:45Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:33:50Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:33:50Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T05:33:55Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T05:33:55Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)

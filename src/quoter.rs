@@ -94,7 +94,7 @@ impl Quoter {
                 let mut current_token = token_in.to_string();
                 for pool_id in path {
                     if let Some(pool) = self.cache.get_pool(pool_id) {
-                        current_token = if pool.token_a == current_token { pool.token_b } else { pool.token_a };
+                        current_token = if pool.token_a == current_token { pool.token_b.clone() } else { pool.token_a.clone() };
                         token_path.push(current_token.clone());
                     }
                 }
@@ -130,7 +130,7 @@ impl Quoter {
             let mut current_token = token_in.to_string();
             for pool_id in path {
                 if let Some(pool) = self.cache.get_pool(pool_id) {
-                    current_token = if pool.token_a == current_token { pool.token_b } else { pool.token_a };
+                    current_token = if pool.token_a == current_token { pool.token_b.clone() } else { pool.token_a.clone() };
                     token_path.push(current_token.clone());
                 }
             }
@@ -180,7 +180,7 @@ impl Quoter {
             current_amount = res.amount_out;
             
             // Advance current token
-            current_token = if a_to_b { pool.token_b } else { pool.token_a };
+            current_token = if a_to_b { pool.token_b.clone() } else { pool.token_a.clone() };
         }
         Ok(current_amount)
     }
@@ -231,7 +231,7 @@ impl Quoter {
             ideal_out *= adjusted_mid_price;
 
             // Advance current token
-            current_token = if pool.token_a == current_token { pool.token_b } else { pool.token_a };
+            current_token = if pool.token_a == current_token { pool.token_b.clone() } else { pool.token_a.clone() };
         }
 
         let actual_out = self.simulate_path(path, token_in, amount_in)? as f64;
@@ -411,13 +411,13 @@ impl Quoter {
 
     fn derive_tick_array_pda(&self, whirlpool: &Pubkey, tick: i32, tick_spacing: u16) -> Pubkey {
         let ticks_in_array = 88i32;
-        let array_size = tick_spacing as i32 * ticks_in_array;
+        let array_size = (tick_spacing as i32).checked_mul(ticks_in_array).unwrap_or(i32::MAX);
         
         // Correct flooring for negative ticks
         let start_tick = if tick >= 0 {
-            (tick / array_size) * array_size
+            (tick / array_size.max(1)) * array_size
         } else {
-            ((tick - array_size + 1) / array_size) * array_size
+            ((tick - array_size + 1) / array_size.max(1)) * array_size
         };
         
         let (pda, _) = Pubkey::find_program_address(
@@ -541,13 +541,13 @@ impl Quoter {
                 data.extend_from_slice(&min_amount_out.to_le_bytes());
                 
                 let sqrt_price_limit = if let Some(clmm) = &pool.clmm_data {
-                    let array_size = clmm.tick_spacing as i32 * 88;
-                    let array_idx = if clmm.current_tick >= 0 { clmm.current_tick / array_size } else { (clmm.current_tick - array_size + 1) / array_size };
+                    let array_size = (clmm.tick_spacing as i32).saturating_mul(88);
+                    let array_idx = if clmm.current_tick >= 0 { clmm.current_tick / array_size.max(1) } else { (clmm.current_tick - array_size + 1) / array_size.max(1) };
                     if a_to_b {
-                        let limit_tick = (array_idx - 2) * array_size;
+                        let limit_tick = array_idx.saturating_sub(2).saturating_mul(array_size);
                         crate::math::tick_to_sqrt_price_x64(limit_tick).saturating_add(1)
                     } else {
-                        let limit_tick = (array_idx + 3) * array_size - 1;
+                        let limit_tick = array_idx.saturating_add(3).saturating_mul(array_size).saturating_sub(1);
                         crate::math::tick_to_sqrt_price_x64(limit_tick).saturating_sub(1)
                     }
                 } else {

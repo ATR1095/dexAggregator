@@ -44,13 +44,16 @@ impl MySOR {
         if decimals == 0 {
             return amount.to_string();
         }
-        let divisor = 10u128.pow(decimals);
+        // Limit decimals to 38 (max power of 10 that fits in u128)
+        let safe_decimals = decimals.min(38);
+        let divisor = 10u128.checked_pow(safe_decimals).unwrap_or(u128::MAX);
+        
         let integer = amount / divisor;
         let fractional = amount % divisor;
         if fractional == 0 {
             return integer.to_string();
         }
-        format!("{}.{:0width$}", integer, fractional, width = decimals as usize).trim_end_matches('0').trim_end_matches('.').to_string()
+        format!("{}.{:0width$}", integer, fractional, width = safe_decimals as usize).trim_end_matches('0').trim_end_matches('.').to_string()
     }
 }
 
@@ -80,7 +83,7 @@ impl SorService for MySOR {
             output_amount: quote.amount_out.to_string(),
             path: best_route.pool_ids.clone(),
             price_impact: best_route.price_impact,
-            token_path: best_route.token_path.clone(),
+            token_path: best_route.token_path.iter().map(|m| self.quoter.cache.get_symbol_by_mint(m)).collect(),
             human_input_amount: self.atomic_to_human(amount_in as u128, input_decimals),
             human_output_amount: self.atomic_to_human(quote.amount_out as u128, output_decimals),
         }))
@@ -92,6 +95,14 @@ impl SorService for MySOR {
 
         let input_mint = self.resolve_token(&req.input_token);
         let output_mint = self.resolve_token(&req.output_token);
+
+        // C. Request Validation: Validate recent_blockhash
+        if !req.recent_blockhash.is_empty() {
+            use std::str::FromStr;
+            if solana_sdk::hash::Hash::from_str(&req.recent_blockhash).is_err() {
+                 return Err(Status::invalid_argument("Invalid recent_blockhash (must be 32-byte Base58)"));
+            }
+        }
 
         // 1. Get the quote first to get the routes
         let quote = self.quoter.get_quote(&input_mint, &output_mint, amount_in, 16)
@@ -112,12 +123,12 @@ impl SorService for MySOR {
         }
 
         // 3. Build detailed routes for the response
-        let input_decimals = self.quoter.cache.get_decimals(&req.input_token);
-        let output_decimals = self.quoter.cache.get_decimals(&req.output_token);
+        let input_decimals = self.quoter.cache.get_decimals(&input_mint);
+        let output_decimals = self.quoter.cache.get_decimals(&output_mint);
 
         let detailed_routes = quote.split_routes.iter().map(|r| {
             DetailedRoute {
-                token_path: r.token_path.clone(),
+                token_path: r.token_path.iter().map(|m| self.quoter.cache.get_symbol_by_mint(m)).collect(),
                 pool_ids: r.pool_ids.clone(),
                 amount_in: r.amount_in.to_string(),
                 amount_out: r.amount_out.to_string(),
@@ -133,7 +144,9 @@ impl SorService for MySOR {
         Ok(Response::new(SwapResponse {
             status: "success".to_string(),
             message: "Transaction built successfully".to_string(),
-            route: quote.split_routes.get(0).map(|r| r.token_path.clone()).unwrap_or_default(),
+            route: quote.split_routes.get(0).map(|r| {
+                r.token_path.iter().map(|m| self.quoter.cache.get_symbol_by_mint(m)).collect()
+            }).unwrap_or_default(),
             output_amount: quote.amount_out.to_string(),
             human_output_amount: self.atomic_to_human(quote.amount_out as u128, output_decimals),
             routes: detailed_routes,
@@ -172,9 +185,18 @@ impl SorService for MySOR {
     }
 }
 
-async fn refresh_pools(cache: Arc<GlobalPoolCache>, oracle_addr: String) {
+async fn refresh_pools(cache: Arc<GlobalPoolCache>, oracle_addr: String, mut shutdown: tokio::sync::oneshot::Receiver<()>) {
     loop {
-        sleep(Duration::from_secs(5)).await;
+        // Use tokio::select to wait for either the sleep or the shutdown signal
+        tokio::select! {
+            _ = sleep(Duration::from_secs(5)) => {
+                // Continue with the refresh logic
+            }
+            _ = &mut shutdown => {
+                info!("SOR: Shutdown signal received, stopping refresh loop");
+                break;
+            }
+        }
         
         use oracle::price_oracle_client::PriceOracleClient;
         let mut client = match PriceOracleClient::connect(oracle_addr.clone()).await {
@@ -194,61 +216,43 @@ async fn refresh_pools(cache: Arc<GlobalPoolCache>, oracle_addr: String) {
                 let mut clmm_data = None;
                 let mut lb_bin_data = None;
 
-                if (update.amm_type == 1 || update.dex_label == "orca") && update.extra_data.len() >= 36 {
-                    // Adaptive Orca Parsing
-                    let (offset, has_full_data) = if update.extra_data.len() >= 752 { (8, true) } 
-                                                 else if update.extra_data.len() >= 744 { (0, true) }
-                                                 else { (0, false) };
-                    
-                    if has_full_data {
-                        // Standard Whirlpool layout
-                        let tick_spacing = u16::from_le_bytes(update.extra_data[offset+1..offset+3].try_into().unwrap());
-                        let fee_rate = u16::from_le_bytes(update.extra_data[offset+4..offset+6].try_into().unwrap());
-                        let liquidity = u128::from_le_bytes(update.extra_data[offset+40..offset+56].try_into().unwrap());
-                        let sqrt_price_x64 = u128::from_le_bytes(update.extra_data[offset+56..offset+72].try_into().unwrap());
-                        let current_tick = i32::from_le_bytes(update.extra_data[offset+72..offset+76].try_into().unwrap());
+                if update.amm_type == 1 || update.dex_label == "orca" {
+                    // Orca Whirlpool: SqrtPrice(16) + Liquidity(16) + Tick(4) + Spacing(2) = 38 bytes
+                    let d = &update.extra_data;
+                    if d.len() >= 36 {
+                        let sqrt_price_x64 = d.get(0..16).and_then(|b| b.try_into().ok()).map(u128::from_le_bytes).unwrap_or(0);
+                        let liquidity = d.get(16..32).and_then(|b| b.try_into().ok()).map(u128::from_le_bytes).unwrap_or(0);
+                        let current_tick = d.get(32..36).and_then(|b| b.try_into().ok()).map(i32::from_le_bytes).unwrap_or(0);
+                        let tick_spacing = d.get(36..38).and_then(|b| b.try_into().ok()).map(u16::from_le_bytes).unwrap_or(64);
 
-                        fee_bps = (fee_rate as f64 / 100.0) as u32; // millionths -> bps
-                        clmm_data = Some(crate::cache::ClmmData {
-                            tick_spacing,
-                            current_tick,
-                            sqrt_price_x64,
-                            liquidity,
-                            ticks: dashmap::DashMap::new(),
-                        });
-                    } else {
-                        // Partial update: sqrt_price (16) + liquidity (16) + current_tick (4)
-                        let sqrt_price_x64 = u128::from_le_bytes(update.extra_data[0..16].try_into().unwrap());
-                        let liquidity = u128::from_le_bytes(update.extra_data[16..32].try_into().unwrap());
-                        let current_tick = i32::from_le_bytes(update.extra_data[32..36].try_into().unwrap());
-                        
-                        clmm_data = Some(crate::cache::ClmmData {
-                            tick_spacing: 64, 
-                            current_tick,
-                            sqrt_price_x64,
-                            liquidity,
-                            ticks: dashmap::DashMap::new(),
+                        if sqrt_price_x64 > 0 {
+                            clmm_data = Some(crate::cache::ClmmData {
+                                tick_spacing,
+                                current_tick,
+                                sqrt_price_x64,
+                                liquidity,
+                                ticks: std::collections::BTreeMap::new(),
+                                tick_bitmap: None,
+                            });
+                        }
+                    }
+                } else if update.amm_type == 2 || update.dex_label == "meteora" {
+                    // Meteora DLMM: ActiveId(4) + BinStep(2) + BaseFactor(2) = 8 bytes
+                    let d = &update.extra_data;
+                    if d.len() >= 8 {
+                        let active_id = d.get(0..4).and_then(|b| b.try_into().ok()).map(i32::from_le_bytes).unwrap_or(0);
+                        let bin_step = d.get(4..6).and_then(|b| b.try_into().ok()).map(u16::from_le_bytes).unwrap_or(0);
+                        let base_factor = d.get(6..8).and_then(|b| b.try_into().ok()).map(u16::from_le_bytes).unwrap_or(0);
+
+                        let fee_rate = (base_factor as u64).saturating_mul(bin_step as u64).saturating_mul(10);
+                        fee_bps = (fee_rate / 100000).max(1) as u32;
+
+                        lb_bin_data = Some(crate::cache::LbBinData { 
+                            active_id, 
+                            bin_step,
+                            bins: std::collections::BTreeMap::new(),
                         });
                     }
-                } else if (update.amm_type == 2 || update.dex_label == "meteora") && update.extra_data.len() >= 80 {
-                    // Meteora DLMM Parsing
-                    let (a_id_off, b_step_off, b_fact_off) = if update.extra_data.len() >= 800 {
-                        (76, 80, 8) 
-                    } else {
-                        (68, 72, 0)
-                    };
-
-                    let active_id = i32::from_le_bytes(update.extra_data[a_id_off..a_id_off+4].try_into().unwrap());
-                    let bin_step = u16::from_le_bytes(update.extra_data[b_step_off..b_step_off+2].try_into().unwrap());
-                    
-                    let base_factor = u16::from_le_bytes(update.extra_data[b_fact_off..b_fact_off+2].try_into().unwrap());
-                    let fee_rate = base_factor as u64 * bin_step as u64 * 10;
-                    fee_bps = (fee_rate / 100000).max(1) as u32; // 10^-9 units -> bps
-
-                    lb_bin_data = Some(crate::cache::LbBinData {
-                        active_id,
-                        bin_step,
-                    });
                 }
 
                 cache.update_pool(update.pool_id.clone(), PoolState {
@@ -290,20 +294,30 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let oracle_addr = "http://127.0.0.1:50051".to_string();
     
+    let (shutdown_tx, shutdown_rx) = tokio::sync::oneshot::channel();
+
     let refresh_cache = cache.clone();
     let refresh_addr = oracle_addr.clone();
     tokio::spawn(async move {
-        refresh_pools(refresh_cache, refresh_addr).await;
+        refresh_pools(refresh_cache, refresh_addr, shutdown_rx).await;
     });
 
     let sor_service = MySOR { quoter: quoter.clone() };
     let addr = "127.0.0.1:50052".parse()?;
+
     info!("SOR gRPC Server listening on {}", addr);
 
     Server::builder()
         .add_service(SorServiceServer::new(sor_service))
-        .serve(addr)
+        .serve_with_shutdown(addr, async move {
+            tokio::signal::ctrl_c()
+                .await
+                .expect("failed to install CTRL+C handler");
+            info!("SOR: Ctrl+C pressed, starting graceful shutdown...");
+            let _ = shutdown_tx.send(());
+        })
         .await?;
 
+    info!("SOR: Service shut down completely.");
     Ok(())
 }

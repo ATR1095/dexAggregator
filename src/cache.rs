@@ -1,5 +1,6 @@
 use dashmap::DashMap;
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum PoolType {
@@ -8,7 +9,7 @@ pub enum PoolType {
     LlbBin,
 }
 
-use std::collections::HashMap;
+use std::collections::{HashMap, BTreeMap};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PoolState {
@@ -35,13 +36,22 @@ pub struct ClmmData {
     pub sqrt_price_x64: u128,
     pub current_tick: i32,
     pub tick_spacing: u16,
-    pub ticks: DashMap<i32, TickInfo>,
+    pub ticks: BTreeMap<i32, TickInfo>,
+    /// Optional bitmap for faster tick traversal in very large arrays
+    pub tick_bitmap: Option<BTreeMap<i16, u64>>, 
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LbBinData {
     pub active_id: i32,
     pub bin_step: u16,
+    pub bins: BTreeMap<i32, BinInfo>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BinInfo {
+    pub amount_x: u128,
+    pub amount_y: u128,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -51,7 +61,7 @@ pub struct TickInfo {
 }
 
 pub struct GlobalPoolCache {
-    pub pools: DashMap<String, PoolState>,
+    pub pools: DashMap<String, Arc<PoolState>>,
     pub symbols: DashMap<String, String>,  // Symbol -> Mint
     pub mints: DashMap<String, String>,    // Mint -> Symbol
     pub decimals: DashMap<String, u32>,    // Mint -> Decimals
@@ -86,9 +96,11 @@ impl GlobalPoolCache {
     // 1. Only insert symbols if they aren't "UNKNOWN" 
     // 2. Only insert if they don't already exist (prevent overwriting good data with bad)
     if sym_a != "UNKNOWN" && !self.symbols.contains_key(&sym_a) {
+        log::info!("SOR: Discovered token {} ({})", sym_a, state.token_a);
         self.symbols.insert(sym_a, state.token_a.clone());
     }
     if sym_b != "UNKNOWN" && !self.symbols.contains_key(&sym_b) {
+        log::info!("SOR: Discovered token {} ({})", sym_b, state.token_b);
         self.symbols.insert(sym_b, state.token_b.clone());
     }
 
@@ -112,7 +124,7 @@ impl GlobalPoolCache {
     }
 
     // Update the actual pool state
-    self.pools.insert(id, state);
+    self.pools.insert(id, Arc::new(state));
 }
 
     pub fn seed_common_tokens(&self) {
@@ -137,8 +149,8 @@ impl GlobalPoolCache {
         self.decimals.get(mint).map(|d| *d.value()).unwrap_or(0)
     }
 
-    pub fn get_pool(&self, id: &str) -> Option<PoolState> {
-        self.pools.get(id).map(|p| p.clone())
+    pub fn get_pool(&self, id: &str) -> Option<Arc<PoolState>> {
+        self.pools.get(id).map(|p| p.value().clone())
     }
 
     pub fn get_symbol_by_mint(&self, mint: &str) -> String {
