@@ -1,186 +1,138 @@
-[2026-04-16T07:24:11Z INFO  SOR] SOR gRPC Server listening on 127.0.0.1:50052
-[2026-04-16T07:24:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:24:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:24:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:24:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:24:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:24:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:24:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:24:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:25:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:25:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:25:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:25:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:25:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:25:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:25:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:25:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:26:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:26:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:26:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:26:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:26:37Z INFO  SOR::quoter] Quoter: Requesting quote for So11111111111111111111111111111111111111112 -> EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v (amount: 100000000)
-[2026-04-16T07:26:37Z INFO  SOR::graph] Graph: Successfully built graph with 51 edges
-[2026-04-16T07:26:37Z INFO  SOR::graph] Graph: Searching routes from So11111111111111111111111111111111111111112 to EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v (nodes: 59)
-[2026-04-16T07:26:37Z INFO  SOR::graph] Graph: Search complete. Found 2 routes
-[2026-04-16T07:26:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:26:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:26:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:26:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:27:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:27:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:27:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:27:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:27:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:27:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:27:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:27:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:28:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:28:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:28:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:28:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:28:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:28:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:28:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:28:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:29:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:29:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:29:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:29:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:29:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:29:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:29:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:29:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:30:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:30:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:30:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:30:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:30:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:30:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:30:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:30:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:31:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:31:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:31:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:31:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:31:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:31:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:31:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:31:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:32:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:32:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:32:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:32:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:32:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:32:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:32:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:32:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:33:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:33:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:33:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:33:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:33:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:33:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:33:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:33:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:34:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:34:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:34:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:34:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:34:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:34:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:34:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:34:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:35:11Z INFO  SOR::quoter] Quoter: Requesting quote for So11111111111111111111111111111111111111112 -> EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v (amount: 3232138000000000)
-[2026-04-16T07:35:11Z INFO  SOR::graph] Graph: Successfully built graph with 51 edges
-[2026-04-16T07:35:11Z INFO  SOR::graph] Graph: Searching routes from So11111111111111111111111111111111111111112 to EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v (nodes: 59)
-[2026-04-16T07:35:11Z INFO  SOR::graph] Graph: Search complete. Found 2 routes
-[2026-04-16T07:35:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:35:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:35:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:35:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:35:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:35:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:35:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:35:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:36:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:36:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:36:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:36:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:36:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:36:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:36:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:36:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:37:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:37:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:37:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:37:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:37:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:37:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:37:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:37:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:38:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:38:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:38:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:38:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:38:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:38:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:38:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:38:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:39:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:39:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:39:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:39:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:39:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:39:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:39:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:39:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:40:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:40:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:40:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:40:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:40:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:40:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:40:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:40:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:41:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:41:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:41:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:41:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:41:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:41:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:41:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:41:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:42:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:42:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:42:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:42:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:42:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:42:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:42:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:42:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:43:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:43:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:43:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:43:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:43:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:43:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:43:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:43:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:44:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:44:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:44:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:44:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:44:41Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:44:41Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:44:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:44:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:45:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:45:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:45:26Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:45:26Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:45:41Z WARN  SOR] SOR: Failed to connect to Price Oracle for refresh: transport error
-[2026-04-16T07:45:56Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:45:56Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
-[2026-04-16T07:46:11Z INFO  SOR] SOR: Discovered 52 pools from Oracle
-[2026-04-16T07:46:11Z INFO  SOR] SOR: Pool cache refresh complete (51 pools in cache)
+[2026-05-05T04:45:25Z INFO  SOR] SOR gRPC Server listening on 127.0.0.1:50052
+[2026-05-05T04:45:30Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:45:30Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:45:35Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:45:35Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:45:40Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:45:40Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:45:45Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:45:45Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:45:50Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:45:50Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:45:56Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:45:56Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:01Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:01Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:06Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:06Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:11Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:11Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:16Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:16Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:21Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:21Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:26Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:26Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:31Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:31Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:36Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:36Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:41Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:41Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:46Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:46Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:51Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:51Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:46:56Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:46:56Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:01Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:01Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:06Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:06Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:11Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:11Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:16Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:16Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:21Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:21Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:26Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:26Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:31Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:31Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:36Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:36Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:41Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:41Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:46Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:46Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:51Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:51Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:47:56Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:47:56Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:01Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:01Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:06Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:06Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:11Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:11Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:16Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:16Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:21Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:21Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:26Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:26Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:31Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:31Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:36Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:36Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:41Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:41Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:46Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:46Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:51Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:51Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:48:56Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:48:56Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:49:01Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:49:01Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:49:06Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:49:06Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:49:11Z INFO  SOR] SOR: Received 157 updates from Oracle
+[2026-05-05T04:49:11Z INFO  SOR] SOR: Pool cache refresh complete (157 pools in cache)
+[2026-05-05T04:49:16Z WARN  SOR] SOR: Failed to connect to Oracle: transport error
+[2026-05-05T04:49:22Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:49:22Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:49:27Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:49:27Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:49:32Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:49:32Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:49:37Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:49:37Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:49:42Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:49:42Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:49:47Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:49:47Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:49:52Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:49:52Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:49:57Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:49:57Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:02Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:02Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:07Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:07Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:12Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:12Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:17Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:17Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:22Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:22Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:27Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:27Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:32Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:32Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:37Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:37Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:42Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:42Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:47Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:47Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:52Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:52Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:50:57Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:50:57Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:51:02Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:51:02Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:51:07Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:51:07Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)
+[2026-05-05T04:51:12Z INFO  SOR] SOR: Received 160 updates from Oracle
+[2026-05-05T04:51:12Z INFO  SOR] SOR: Pool cache refresh complete (160 pools in cache)

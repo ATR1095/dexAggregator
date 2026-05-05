@@ -47,6 +47,8 @@ message SwapRequest {
   string amount = 3;
   string user_address = 4;
   double slippage_bps = 5;
+  string recent_blockhash = 6;
+  uint64 prioritization_fee_lamports = 7;
 }
 
 // A single candidate route with its token path and amounts.
@@ -62,11 +64,11 @@ message DetailedRoute {
 }
 
 message SwapResponse {
-  string tx_hash = 1;
   string status = 2;
   string message = 3;
   repeated string route = 4;          // Best route token path (kept for backwards compat)
   string output_amount = 5;
   string human_output_amount = 6;
   repeated DetailedRoute routes = 7;  // All routes, sorted best (highest output) first
+  bytes transaction = 8;
 }

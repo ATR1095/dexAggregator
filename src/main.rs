@@ -1,23 +1,23 @@
-pub mod cache;
-pub mod math;
-pub mod graph;
-pub mod quoter;
-
 use crate::cache::{GlobalPoolCache, PoolState, PoolType};
 use crate::quoter::Quoter;
-use log::{info, warn, debug};
-use oracle::price_oracle_client::PriceOracleClient;
-use sor::sor_service_server::{SorService, SorServiceServer};
+use crate::sor::{sor_service_server::{SorService, SorServiceServer}, QuoteRequest, QuoteResponse, SwapRequest, SwapResponse, ListTokensRequest, ListTokensResponse, TokenInfo, DetailedRoute};
 use std::sync::Arc;
+use tokio::time::{sleep, Duration};
 use tonic::{transport::Server, Request, Response, Status};
+use log::{info, warn};
+
+pub mod sor {
+    tonic::include_proto!("sor");
+}
 
 pub mod oracle {
     tonic::include_proto!("oracle");
 }
 
-pub mod sor {
-    tonic::include_proto!("sor");
-}
+pub mod cache;
+pub mod math;
+pub mod quoter;
+pub mod graph;
 
 pub struct MySOR {
     quoter: Arc<Quoter>,
@@ -31,26 +31,14 @@ impl MySOR {
         }
         
         let token_upper = token.to_uppercase();
-        
-        // Manual override for common tokens if cache is not yet ready
-        match token_upper.as_str() {
-            "SOL" => return "So11111111111111111111111111111111111111112".to_string(),
-            "USDC" => return "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v".to_string(),
-            "USDT" => return "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB".to_string(),
-            "MSOL" => return "mSoLzYSa7mSrib6Pqz9shqZ57n79m1Sjg7rBe39626S".to_string(),
-            "LIKE" => return "3bRTivrVsitbmCTGtqwp7hxXPsybkjn4XLNtPsHqa3zR".to_string(),
-            _ => {}
-        }
 
-        // Otherwise, look up in the symbols cache
+        // Look up in the symbols cache (populated dynamically by the Oracle)
         if let Some(mint) = self.quoter.cache.symbols.get(&token_upper) {
-            let m: String = mint.value().clone();
-            return m;
+            return mint.value().clone();
         }
         
         token.to_string()
     }
-
 
     fn atomic_to_human(&self, amount: u128, decimals: u32) -> String {
         if decimals == 0 {
@@ -68,256 +56,224 @@ impl MySOR {
 
 #[tonic::async_trait]
 impl SorService for MySOR {
-    async fn quote(
-        &self,
-        request: Request<sor::QuoteRequest>,
-    ) -> Result<Response<sor::QuoteResponse>, Status> {
+    async fn quote(&self, request: Request<QuoteRequest>) -> Result<Response<QuoteResponse>, Status> {
         let req = request.into_inner();
         let amount_in = req.amount.parse::<u64>().map_err(|_| Status::invalid_argument("Invalid amount"))?;
         
         let input_mint = self.resolve_token(&req.input_token);
         let output_mint = self.resolve_token(&req.output_token);
 
+        // get_quote is synchronous and takes slices (default to 16)
         let quote = self.quoter.get_quote(&input_mint, &output_mint, amount_in, 16)
-            .map_err(|e| Status::internal(format!("Quote error: {}", e)))?;
-
+            .map_err(|e| Status::not_found(format!("No route found: {}", e)))?;
+        
         let input_decimals = self.quoter.cache.get_decimals(&input_mint);
         let output_decimals = self.quoter.cache.get_decimals(&output_mint);
-        info!("Quote: {} -> {} (amount_in={}, human_in={})", req.input_token, req.output_token, amount_in, self.atomic_to_human(amount_in as u128, input_decimals));
+        
+        // Using the first candidate route for the main path response
+        let best_route = quote.split_routes.get(0).ok_or_else(|| Status::not_found("No split routes found"))?;
 
-        let mut token_path = Vec::new();
-        if let Some(route) = quote.routes.get(0) {
-            token_path.push(self.quoter.cache.get_symbol_by_mint(&input_mint));
-            let mut current_token = input_mint.clone();
-            for pool_id in &route.pool_ids {
-                if let Some(pool) = self.quoter.cache.get_pool(pool_id) {
-                    if pool.token_a == current_token {
-                        current_token = pool.token_b.clone();
-                    } else {
-                        current_token = pool.token_a.clone();
-                    }
-                    token_path.push(self.quoter.cache.get_symbol_by_mint(&current_token));
-                }
-            }
-        }
-
-        let mut response = sor::QuoteResponse {
+        Ok(Response::new(QuoteResponse {
             input_token: req.input_token,
             output_token: req.output_token,
-            input_amount: req.amount.clone(),
+            input_amount: req.amount,
             output_amount: quote.amount_out.to_string(),
-            path: quote.routes.get(0).map(|r| r.pool_ids.clone()).unwrap_or_default(),
-            price_impact: 0.0,
-            token_path,
+            path: best_route.pool_ids.clone(),
+            price_impact: best_route.price_impact,
+            token_path: best_route.token_path.clone(),
             human_input_amount: self.atomic_to_human(amount_in as u128, input_decimals),
             human_output_amount: self.atomic_to_human(quote.amount_out as u128, output_decimals),
-        };
-
-        // Populate new fields for the best route (legacy QuoteResponse)
-        // Note: For now, QuoteResponse only has an overall price_impact.
-        // We'll calculate it for the best route.
-        if let Some(best_route) = quote.routes.first() {
-            response.price_impact = best_route.price_impact;
-        }
-
-        Ok(Response::new(response))
-    }
-
-    async fn list_tokens(
-        &self,
-        _request: Request<sor::ListTokensRequest>,
-    ) -> Result<Response<sor::ListTokensResponse>, Status> {
-        let mut seen_a = std::collections::HashSet::new();
-        let mut seen_b = std::collections::HashSet::new();
-        let mut token_a_list = Vec::new();
-        let mut token_b_list = Vec::new();
-
-        for entry in self.quoter.cache.pools.iter() {
-            let pool = entry.value();
-
-            // Only expose tokens from Raydium pools (includes "raydium" and "raydium_cpmm").
-            // Orca pools use CLMM math which we treat as a stub;
-            // their tokens should not appear in the public list until
-            // proper CLMM support is added.
-            if !pool.dex_label.starts_with("raydium") {
-                continue;
-            }
-
-            // Collect unique token_a entries — skip blank or "UNKNOWN" symbols
-            let sym_a_upper = pool.symbol_a.to_uppercase();
-            if !pool.symbol_a.is_empty()
-                && sym_a_upper != "UNKNOWN"
-                && seen_a.insert(pool.token_a.clone())
-            {
-                let symbol = self.quoter.cache.get_symbol_by_mint(&pool.token_a);
-                let symbol = if symbol.contains("...") { pool.symbol_a.clone() } else { symbol };
-
-                token_a_list.push(sor::TokenInfo {
-                    mint: pool.token_a.clone(),
-                    symbol,
-                    decimals: pool.decimals_a,
-                });
-            }
-
-            // Collect unique token_b entries — skip blank or "UNKNOWN" symbols
-            let sym_b_upper = pool.symbol_b.to_uppercase();
-            if !pool.symbol_b.is_empty()
-                && sym_b_upper != "UNKNOWN"
-                && seen_b.insert(pool.token_b.clone())
-            {
-                let symbol = self.quoter.cache.get_symbol_by_mint(&pool.token_b);
-                let symbol = if symbol.contains("...") { pool.symbol_b.clone() } else { symbol };
-
-                token_b_list.push(sor::TokenInfo {
-                    mint: pool.token_b.clone(),
-                    symbol,
-                    decimals: pool.decimals_b,
-                });
-            }
-        }
-
-        // Sort alphabetically by symbol
-        token_a_list.sort_by(|a, b| a.symbol.to_lowercase().cmp(&b.symbol.to_lowercase()));
-        token_b_list.sort_by(|a, b| a.symbol.to_lowercase().cmp(&b.symbol.to_lowercase()));
-
-        info!("ListTokens: returning {} token_a, {} token_b", token_a_list.len(), token_b_list.len());
-
-        Ok(Response::new(sor::ListTokensResponse {
-            token_a: token_a_list,
-            token_b: token_b_list,
         }))
     }
 
-
-    async fn swap(
-        &self,
-        request: Request<sor::SwapRequest>,
-    ) -> Result<Response<sor::SwapResponse>, Status> {
+    async fn swap(&self, request: Request<SwapRequest>) -> Result<Response<SwapResponse>, Status> {
         let req = request.into_inner();
         let amount_in = req.amount.parse::<u64>().map_err(|_| Status::invalid_argument("Invalid amount"))?;
-        
+
         let input_mint = self.resolve_token(&req.input_token);
         let output_mint = self.resolve_token(&req.output_token);
 
-        let input_decimals = self.quoter.cache.get_decimals(&input_mint);
-        let output_decimals = self.quoter.cache.get_decimals(&output_mint);
+        // 1. Get the quote first to get the routes
+        let quote = self.quoter.get_quote(&input_mint, &output_mint, amount_in, 16)
+            .map_err(|e| Status::not_found(format!("No route found for swap: {}", e)))?;
 
-        let mut quote = self.quoter.get_quote(&input_mint, &output_mint, amount_in, 16)
-            .map_err(|e| Status::internal(format!("Quote error: {}", e)))?;
+        // 2. Build the transaction using build_route (synchronous)
+        let tx_bytes = self.quoter.build_route(
+            &quote.split_routes,
+            &req.user_address,
+            &req.recent_blockhash,
+            req.prioritization_fee_lamports,
+            req.slippage_bps,
+        );
 
-        // Sort routes descending by amount_out: best route (highest output) first.
-        quote.routes.sort_by(|a, b| b.amount_out.cmp(&a.amount_out));
+        if tx_bytes.is_empty() {
+            warn!("SOR: build_route returned empty bytes for {} -> {} (amount: {})", req.input_token, req.output_token, req.amount);
+            return Err(Status::internal("Failed to build transaction (empty bytes)"));
+        }
 
-        // Build the token path for each route plan.
-        let build_token_path = |pool_ids: &Vec<String>| -> Vec<String> {
-            let mut path = Vec::new();
-            path.push(self.quoter.cache.get_symbol_by_mint(&input_mint));
-            let mut current_token = input_mint.clone();
-            for pool_id in pool_ids {
-                if let Some(pool) = self.quoter.cache.get_pool(pool_id) {
-                    if pool.token_a == current_token {
-                        current_token = pool.token_b.clone();
-                    } else {
-                        current_token = pool.token_a.clone();
-                    }
-                    path.push(self.quoter.cache.get_symbol_by_mint(&current_token));
-                }
-            }
-            path
-        };
+        // 3. Build detailed routes for the response
+        let input_decimals = self.quoter.cache.get_decimals(&req.input_token);
+        let output_decimals = self.quoter.cache.get_decimals(&req.output_token);
 
-        // Build the detailed routes (already sorted best-first).
-        let detailed_routes: Vec<sor::DetailedRoute> = quote.routes.iter().map(|plan| {
-            let token_path = build_token_path(&plan.pool_ids);
-            sor::DetailedRoute {
-                token_path,
-                pool_ids: plan.pool_ids.clone(),
-                amount_in: plan.amount_in.to_string(),
-                amount_out: plan.amount_out.to_string(),
-                human_amount_in: self.atomic_to_human(plan.amount_in as u128, input_decimals),
-                human_amount_out: self.atomic_to_human(plan.amount_out as u128, output_decimals),
-                price_impact: plan.price_impact,
-                dex_labels: plan.pool_ids.iter().map(|id| {
-                    self.quoter.cache.get_pool(id).map(|p| p.dex_label).unwrap_or_default()
+        let detailed_routes = quote.split_routes.iter().map(|r| {
+            DetailedRoute {
+                token_path: r.token_path.clone(),
+                pool_ids: r.pool_ids.clone(),
+                amount_in: r.amount_in.to_string(),
+                amount_out: r.amount_out.to_string(),
+                human_amount_in: self.atomic_to_human(r.amount_in as u128, input_decimals),
+                human_amount_out: self.atomic_to_human(r.amount_out as u128, output_decimals),
+                price_impact: r.price_impact,
+                dex_labels: r.pool_ids.iter().map(|id| {
+                    self.quoter.cache.get_pool(id).map(|p| p.dex_label.clone()).unwrap_or_default()
                 }).collect(),
             }
         }).collect();
 
-        // Best route token path (index 0 after sort = highest amount_out = best).
-        let best_token_path = quote.routes.first()
-            .map(|plan| build_token_path(&plan.pool_ids))
-            .unwrap_or_default();
-
-        let route_str = best_token_path.join(" -> ");
-        Ok(Response::new(sor::SwapResponse {
-            tx_hash: "0x...".to_string(),
+        Ok(Response::new(SwapResponse {
             status: "success".to_string(),
-            message: format!("Swap initiated for {} to {} via [{}]", req.input_token, req.output_token, route_str),
-            route: best_token_path,
+            message: "Transaction built successfully".to_string(),
+            route: quote.split_routes.get(0).map(|r| r.token_path.clone()).unwrap_or_default(),
             output_amount: quote.amount_out.to_string(),
             human_output_amount: self.atomic_to_human(quote.amount_out as u128, output_decimals),
             routes: detailed_routes,
+            transaction: tx_bytes,
+        }))
+    }
+
+    async fn list_tokens(&self, _request: Request<ListTokensRequest>) -> Result<Response<ListTokensResponse>, Status> {
+        let mut seen_a = std::collections::HashSet::new();
+        let mut seen_b = std::collections::HashSet::new();
+        let mut token_a = Vec::new();
+        let mut token_b = Vec::new();
+        
+        for entry in self.quoter.cache.pools.iter() {
+            let pool = entry.value();
+            if seen_a.insert(pool.token_a.clone()) {
+                token_a.push(TokenInfo {
+                    mint: pool.token_a.clone(),
+                    symbol: pool.symbol_a.clone(),
+                    decimals: pool.decimals_a,
+                });
+            }
+            if seen_b.insert(pool.token_b.clone()) {
+                token_b.push(TokenInfo {
+                    mint: pool.token_b.clone(),
+                    symbol: pool.symbol_b.clone(),
+                    decimals: pool.decimals_b,
+                });
+            }
+        }
+        
+        Ok(Response::new(ListTokensResponse {
+            token_a,
+            token_b,
         }))
     }
 }
 
-async fn refresh_pools(
-    cache: Arc<GlobalPoolCache>,
-    oracle_addr: String,
-) {
-    let mut interval = tokio::time::interval(tokio::time::Duration::from_secs(15));
+async fn refresh_pools(cache: Arc<GlobalPoolCache>, oracle_addr: String) {
     loop {
-        interval.tick().await;
-        debug!("SOR: Starting pool refresh from Oracle...");
-
+        sleep(Duration::from_secs(5)).await;
+        
+        use oracle::price_oracle_client::PriceOracleClient;
         let mut client = match PriceOracleClient::connect(oracle_addr.clone()).await {
             Ok(c) => c,
             Err(e) => {
-                warn!("SOR: Failed to connect to Price Oracle for refresh: {}", e);
+                warn!("SOR: Failed to connect to Oracle: {}", e);
                 continue;
             }
         };
 
-        let pools_resp = client.get_monitored_pools(oracle::Empty {}).await;
-        if let Ok(response) = pools_resp {
-            let pools = response.into_inner().pool_ids;
-            if pools.is_empty() {
-                debug!("SOR: Oracle reported 0 monitored pools. Skipping update.");
-                continue;
-            }
+        if let Ok(res) = client.get_all_pool_updates(oracle::Empty {}).await {
+            let updates = res.into_inner().updates;
             
-            info!("SOR: Discovered {} pools from Oracle", pools.len());
-            for pool_id in pools {
-                let request = tonic::Request::new(oracle::PoolRequest {
-                    pool_id: pool_id.clone(),
-                });
-                if let Ok(res) = client.get_pool_reserves(request).await {
-                    let update = res.into_inner();
-                    cache.update_pool(update.pool_id.clone(), PoolState {
-                        id: update.pool_id,
-                        token_a: update.token_a,
-                        token_b: update.token_b,
-                        symbol_a: update.symbol_a,
-                        symbol_b: update.symbol_b,
-                        decimals_a: update.decimals_a,
-                        decimals_b: update.decimals_b,
-                        reserve_a: update.reserve_a,
-                        reserve_b: update.reserve_b,
-                        // Orca Whirlpools are CLMM — using their full vault balances with
-                        // constant-product math produces wildly inflated quotes (~6x real).
-                        // Mark them as ConcentratedLiquidity so compute_clmm_swap is called;
-                        // that returns 0 until proper tick math is implemented, preventing the
-                        // SOR from routing through Orca with wrong prices.
-                        pool_type: if update.dex_label == "orca" {
-                            PoolType::ConcentratedLiquidity
-                        } else {
-                            PoolType::ConstantProduct
-                        },
-                        fee_bps: 30,
-                        dex_label: update.dex_label,
-                        clmm_data: None,
+            info!("SOR: Received {} updates from Oracle", updates.len());
+            for update in updates {
+                let mut fee_bps = 30;
+                let mut clmm_data = None;
+                let mut lb_bin_data = None;
+
+                if (update.amm_type == 1 || update.dex_label == "orca") && update.extra_data.len() >= 36 {
+                    // Adaptive Orca Parsing
+                    let (offset, has_full_data) = if update.extra_data.len() >= 752 { (8, true) } 
+                                                 else if update.extra_data.len() >= 744 { (0, true) }
+                                                 else { (0, false) };
+                    
+                    if has_full_data {
+                        // Standard Whirlpool layout
+                        let tick_spacing = u16::from_le_bytes(update.extra_data[offset+1..offset+3].try_into().unwrap());
+                        let fee_rate = u16::from_le_bytes(update.extra_data[offset+4..offset+6].try_into().unwrap());
+                        let liquidity = u128::from_le_bytes(update.extra_data[offset+40..offset+56].try_into().unwrap());
+                        let sqrt_price_x64 = u128::from_le_bytes(update.extra_data[offset+56..offset+72].try_into().unwrap());
+                        let current_tick = i32::from_le_bytes(update.extra_data[offset+72..offset+76].try_into().unwrap());
+
+                        fee_bps = (fee_rate as f64 / 100.0) as u32; // millionths -> bps
+                        clmm_data = Some(crate::cache::ClmmData {
+                            tick_spacing,
+                            current_tick,
+                            sqrt_price_x64,
+                            liquidity,
+                            ticks: dashmap::DashMap::new(),
+                        });
+                    } else {
+                        // Partial update: sqrt_price (16) + liquidity (16) + current_tick (4)
+                        let sqrt_price_x64 = u128::from_le_bytes(update.extra_data[0..16].try_into().unwrap());
+                        let liquidity = u128::from_le_bytes(update.extra_data[16..32].try_into().unwrap());
+                        let current_tick = i32::from_le_bytes(update.extra_data[32..36].try_into().unwrap());
+                        
+                        clmm_data = Some(crate::cache::ClmmData {
+                            tick_spacing: 64, 
+                            current_tick,
+                            sqrt_price_x64,
+                            liquidity,
+                            ticks: dashmap::DashMap::new(),
+                        });
+                    }
+                } else if (update.amm_type == 2 || update.dex_label == "meteora") && update.extra_data.len() >= 80 {
+                    // Meteora DLMM Parsing
+                    let (a_id_off, b_step_off, b_fact_off) = if update.extra_data.len() >= 800 {
+                        (76, 80, 8) 
+                    } else {
+                        (68, 72, 0)
+                    };
+
+                    let active_id = i32::from_le_bytes(update.extra_data[a_id_off..a_id_off+4].try_into().unwrap());
+                    let bin_step = u16::from_le_bytes(update.extra_data[b_step_off..b_step_off+2].try_into().unwrap());
+                    
+                    let base_factor = u16::from_le_bytes(update.extra_data[b_fact_off..b_fact_off+2].try_into().unwrap());
+                    let fee_rate = base_factor as u64 * bin_step as u64 * 10;
+                    fee_bps = (fee_rate / 100000).max(1) as u32; // 10^-9 units -> bps
+
+                    lb_bin_data = Some(crate::cache::LbBinData {
+                        active_id,
+                        bin_step,
                     });
                 }
+
+                cache.update_pool(update.pool_id.clone(), PoolState {
+                    id: update.pool_id,
+                    token_a: update.token_a,
+                    token_b: update.token_b,
+                    symbol_a: update.symbol_a,
+                    symbol_b: update.symbol_b,
+                    decimals_a: update.decimals_a,
+                    decimals_b: update.decimals_b,
+                    reserve_a: update.reserve_a,
+                    reserve_b: update.reserve_b,
+                    pool_type: if clmm_data.is_some() {
+                        PoolType::ConcentratedLiquidity
+                    } else if lb_bin_data.is_some() {
+                        PoolType::LlbBin
+                    } else {
+                        PoolType::ConstantProduct
+                    },
+                    fee_bps: fee_bps as u16,
+                    dex_label: update.dex_label,
+                    clmm_data,
+                    lb_bin_data,
+                    accounts: update.accounts,
+                });
             }
             info!("SOR: Pool cache refresh complete ({} pools in cache)", cache.pools.len());
         }
@@ -334,7 +290,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let oracle_addr = "http://127.0.0.1:50051".to_string();
     
-    // Spawn background refresh task
     let refresh_cache = cache.clone();
     let refresh_addr = oracle_addr.clone();
     tokio::spawn(async move {

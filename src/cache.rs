@@ -5,7 +5,10 @@ use serde::{Deserialize, Serialize};
 pub enum PoolType {
     ConstantProduct,
     ConcentratedLiquidity,
+    LlbBin,
 }
+
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PoolState {
@@ -22,6 +25,8 @@ pub struct PoolState {
     pub fee_bps: u16,
     pub dex_label: String,
     pub clmm_data: Option<ClmmData>,
+    pub lb_bin_data: Option<LbBinData>,
+    pub accounts: HashMap<String, String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -31,6 +36,12 @@ pub struct ClmmData {
     pub current_tick: i32,
     pub tick_spacing: u16,
     pub ticks: DashMap<i32, TickInfo>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LbBinData {
+    pub active_id: i32,
+    pub bin_step: u16,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -44,6 +55,7 @@ pub struct GlobalPoolCache {
     pub symbols: DashMap<String, String>,  // Symbol -> Mint
     pub mints: DashMap<String, String>,    // Mint -> Symbol
     pub decimals: DashMap<String, u32>,    // Mint -> Decimals
+    pub token_programs: DashMap<String, String>, // Mint -> ProgramID
 }
 
 impl GlobalPoolCache {
@@ -53,6 +65,7 @@ impl GlobalPoolCache {
             symbols: DashMap::new(),
             mints: DashMap::new(),
             decimals: DashMap::new(),
+            token_programs: DashMap::new(),
         }
     }
 
@@ -89,6 +102,13 @@ impl GlobalPoolCache {
     if state.token_b.len() > 30 {
         self.mints.insert(state.token_b.clone(), state.symbol_b.clone());
         self.decimals.insert(state.token_b.clone(), state.decimals_b);
+    }
+
+    if let Some(prog_a) = state.accounts.get("token_program_a") {
+        self.token_programs.insert(state.token_a.clone(), prog_a.clone());
+    }
+    if let Some(prog_b) = state.accounts.get("token_program_b") {
+        self.token_programs.insert(state.token_b.clone(), prog_b.clone());
     }
 
     // Update the actual pool state
@@ -160,6 +180,8 @@ mod tests {
             fee_bps: 30,
             dex_label: "test".to_string(),
             clmm_data: None,
+            lb_bin_data: None,
+            accounts: HashMap::new(),
         };
 
         cache.update_pool("pool1".to_string(), state);
