@@ -519,24 +519,20 @@ impl Quoter {
                 let (oracle, _) = Pubkey::find_program_address(&[b"oracle", whirlpool.as_ref()], &program_id);
 
                 let accounts = vec![
-                    AccountMeta::new_readonly(program_a, false),
-                    AccountMeta::new_readonly(program_b, false),
-                    AccountMeta::new_readonly(memo_program, false),
-                    AccountMeta::new(user_key, true),
+                    AccountMeta::new_readonly(program_a, false), // token_program
+                    AccountMeta::new(user_key, true),            // token_authority (Signer)
                     AccountMeta::new(whirlpool, false),
-                    AccountMeta::new_readonly(mint_a, false),
-                    AccountMeta::new_readonly(mint_b, false),
-                    AccountMeta::new(user_ata_a, false),
-                    AccountMeta::new(vault_a, false),
-                    AccountMeta::new(user_ata_b, false),
-                    AccountMeta::new(vault_b, false),
+                    AccountMeta::new(user_ata_a, false),         // token_owner_account_a
+                    AccountMeta::new(vault_a, false),            // token_vault_a
+                    AccountMeta::new(user_ata_b, false),         // token_owner_account_b
+                    AccountMeta::new(vault_b, false),            // token_vault_b
                     AccountMeta::new(ta0, false),
                     AccountMeta::new(ta1, false),
                     AccountMeta::new(ta2, false),
                     AccountMeta::new_readonly(oracle, false),
                 ];
 
-                let mut data = vec![0x2b, 0x04, 0xed, 0x0b, 0x1a, 0xc9, 0x1e, 0x62];
+                let mut data = vec![0xf8, 0xc6, 0x9e, 0x91, 0xe1, 0x75, 0x87, 0xc8];
                 data.extend_from_slice(&amount_in.to_le_bytes());
                 data.extend_from_slice(&min_amount_out.to_le_bytes());
                 
@@ -646,6 +642,7 @@ impl Quoter {
                     AccountMeta::new_readonly(token_a_pub, false),
                     AccountMeta::new_readonly(token_b_pub, false),
                     AccountMeta::new_readonly(oracle, false),
+                    AccountMeta::new_readonly(program_id, false), // host_fee_in (placeholder)
                     AccountMeta::new(user_key, true),
                     AccountMeta::new_readonly(program_in, false),
                     AccountMeta::new_readonly(program_out, false),

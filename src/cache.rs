@@ -104,16 +104,29 @@ impl GlobalPoolCache {
         self.symbols.insert(sym_b, state.token_b.clone());
     }
 
-    // Always keep mint-to-symbol and decimals updated 
-    // but consider adding a check to ensure state.token_a is actually a valid mint length
+    // Always keep mint-to-symbol and decimals updated, but PROTECT against bad data
     if state.token_a.len() > 30 {
-        self.mints.insert(state.token_a.clone(), state.symbol_a.clone());
-        self.decimals.insert(state.token_a.clone(), state.decimals_a);
+        // Only update symbol if it's valid
+        if !state.symbol_a.is_empty() && state.symbol_a != "UNKNOWN" {
+            self.mints.insert(state.token_a.clone(), state.symbol_a.clone());
+        }
+        
+        // Only update decimals if they are reasonable (Standard tokens are 6, 9, 18)
+        if state.decimals_a <= 24 {
+            self.decimals.insert(state.token_a.clone(), state.decimals_a);
+        }
     }
     
     if state.token_b.len() > 30 {
-        self.mints.insert(state.token_b.clone(), state.symbol_b.clone());
-        self.decimals.insert(state.token_b.clone(), state.decimals_b);
+        // Only update symbol if it's valid
+        if !state.symbol_b.is_empty() && state.symbol_b != "UNKNOWN" {
+            self.mints.insert(state.token_b.clone(), state.symbol_b.clone());
+        }
+
+        // Only update decimals if they are reasonable
+        if state.decimals_b <= 24 {
+            self.decimals.insert(state.token_b.clone(), state.decimals_b);
+        }
     }
 
     if let Some(prog_a) = state.accounts.get("token_program_a") {
@@ -149,6 +162,12 @@ impl GlobalPoolCache {
         self.decimals.get(mint).map(|d| *d.value()).unwrap_or(0)
     }
 
+    pub fn get_token_info(&self, mint: &str) -> (String, u32) {
+        let symbol = self.get_symbol_by_mint(mint);
+        let decimals = self.get_decimals(mint);
+        (symbol, decimals)
+    }
+
     pub fn get_pool(&self, id: &str) -> Option<Arc<PoolState>> {
         self.pools.get(id).map(|p| p.value().clone())
     }
@@ -159,12 +178,7 @@ impl GlobalPoolCache {
             .unwrap_or_default();
 
         if symbol.is_empty() || symbol == "UNKNOWN" {
-            // Return truncated mint if symbol not found or is restricted
-            if mint.len() > 8 {
-                format!("{}...", &mint[..8])
-            } else {
-                mint.to_string()
-            }
+            "UNKNOWN".to_string()
         } else {
             symbol
         }

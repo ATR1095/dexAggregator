@@ -163,18 +163,24 @@ impl SorService for MySOR {
         for entry in self.quoter.cache.pools.iter() {
             let pool = entry.value();
             if seen_a.insert(pool.token_a.clone()) {
-                token_a.push(TokenInfo {
-                    mint: pool.token_a.clone(),
-                    symbol: pool.symbol_a.clone(),
-                    decimals: pool.decimals_a,
-                });
+                let (symbol, decimals) = self.quoter.cache.get_token_info(&pool.token_a);
+                if symbol != "UNKNOWN" {
+                    token_a.push(TokenInfo {
+                        mint: pool.token_a.clone(),
+                        symbol,
+                        decimals,
+                    });
+                }
             }
             if seen_b.insert(pool.token_b.clone()) {
-                token_b.push(TokenInfo {
-                    mint: pool.token_b.clone(),
-                    symbol: pool.symbol_b.clone(),
-                    decimals: pool.decimals_b,
-                });
+                let (symbol, decimals) = self.quoter.cache.get_token_info(&pool.token_b);
+                if symbol != "UNKNOWN" {
+                    token_b.push(TokenInfo {
+                        mint: pool.token_b.clone(),
+                        symbol,
+                        decimals,
+                    });
+                }
             }
         }
         

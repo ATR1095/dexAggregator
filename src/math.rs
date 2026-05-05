@@ -149,7 +149,7 @@ fn compute_clmm_swap(pool: &PoolState, amount_in: u64, a_to_b: bool) -> Result<S
     }
 
     Ok(SwapResult {
-        amount_out: out_total.min(u64::MAX as u128) as u64,
+        amount_out: if out_total > u64::MAX as u128 { 0 } else { out_total as u64 },
         fee_paid: 0,
         new_sqrt_price: Some(sqrt_curr),
     })
@@ -370,7 +370,7 @@ fn compute_meteora_swap(pool: &PoolState, amount_in: u64, a_to_b: bool) -> Resul
     }
 
     Ok(SwapResult {
-        amount_out: amount_out as u64,
+        amount_out: if amount_out > u64::MAX as u128 { 0 } else { amount_out as u64 },
         fee_paid: fee_paid as u64,
         new_sqrt_price: None,
     })
@@ -412,9 +412,9 @@ fn mul128_hi(a: u128, b: u128) -> u128 {
 /// Returns `u128::MAX` on overflow or division by zero.
 fn div256(numer: (u128, u128), denom: u128) -> u128 {
     let (hi, lo) = numer;
-    if denom == 0 { return u128::MAX; }
+    if denom == 0 { return 0; }
     if hi == 0 { return lo / denom; }
-    if hi >= denom { return u128::MAX; }
+    if hi >= denom { return 0; } // Overflow case
 
     // Use f64 for the 256-bit case to avoid complex long division.
     // Accurate to ~15-17 decimal digits, sufficient for DEX route simulation.
