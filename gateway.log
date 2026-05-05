@@ -8,8 +8,8 @@
 [GIN-debug] GET    /health                   --> main.main.func1 (4 handlers)
 [GIN-debug] GET    /api                      --> main.main.func2 (4 handlers)
 [GIN-debug] GET    /api/*any                 --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (4 handlers)
-{"level":"info","ts":1776324397.603837,"caller":"middleware/logging.go:28","msg":"request","trace_id":"5b4cb122-2afe-41ea-bfe2-67c8586f6c94","status":200,"method":"POST","path":"/v1/swap","query":"","ip":"127.0.0.1","user-agent":"curl/7.68.0","latency":0.00229603}
-{"level":"info","ts":1776324911.1295316,"caller":"middleware/logging.go:28","msg":"request","trace_id":"17e3cc4f-0e78-48af-b1b8-ae01036956b3","status":204,"method":"OPTIONS","path":"/v1/swap","query":"","ip":"172.16.15.36","user-agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36","latency":0.000034448}
-{"level":"info","ts":1776324911.1508765,"caller":"middleware/logging.go:28","msg":"request","trace_id":"0749b70c-c217-4c6d-abf0-dfe43af16620","status":200,"method":"POST","path":"/v1/swap","query":"","ip":"172.16.15.36","user-agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36","latency":0.001491586}
-{"level":"info","ts":1776325461.3119123,"caller":"APIGateway/main.go:96","msg":"shutting down server..."}
-{"level":"info","ts":1776325461.3121796,"caller":"APIGateway/main.go:104","msg":"server exiting"}
+{"level":"info","ts":1777547646.6149945,"caller":"middleware/logging.go:28","msg":"request","trace_id":"23cae041-6006-457c-9149-919fc712489c","status":400,"method":"POST","path":"/v1/swap","query":"","ip":"127.0.0.1","user-agent":"curl/7.68.0","latency":0.008164775}
+{"level":"info","ts":1777547668.9576836,"caller":"middleware/logging.go:28","msg":"request","trace_id":"4b48b90a-901e-4826-bda5-65fa9d718dd7","status":200,"method":"POST","path":"/v1/swap","query":"","ip":"127.0.0.1","user-agent":"curl/7.68.0","latency":0.039650981}
+{"level":"info","ts":1777547694.7576199,"caller":"middleware/logging.go:28","msg":"request","trace_id":"63daebab-0c25-4de0-9392-56c67b641d51","status":200,"method":"POST","path":"/v1/swap","query":"","ip":"127.0.0.1","user-agent":"curl/7.68.0","latency":0.038630977}
+{"level":"info","ts":1777548184.905919,"caller":"APIGateway/main.go:96","msg":"shutting down server..."}
+{"level":"info","ts":1777548184.9061959,"caller":"APIGateway/main.go:104","msg":"server exiting"}

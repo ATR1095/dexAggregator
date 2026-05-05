@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/base64"
 	"net/http"
 
 	"github.com/dexAggregator/APIGateway/internal/grpc"
@@ -13,8 +14,10 @@ type SwapRequest struct {
 	InputToken   string  `json:"inputToken" validate:"required"`
 	OutputToken  string  `json:"outputToken" validate:"required"`
 	Amount       string  `json:"amount" validate:"required"`
-	UserAddress  string  `json:"userAddress" validate:"required"`
-	SlippageBps  float64 `json:"slippageBps" validate:"min=0,max=1000"` // 0 to 10%
+	UserAddress               string  `json:"userAddress" validate:"required"`
+	SlippageBps               float64 `json:"slippageBps" validate:"min=0,max=1000"`
+	RecentBlockhash           string  `json:"recentBlockhash"`
+	PrioritizationFeeLamports uint64  `json:"prioritizationFeeLamports"`
 }
 
 // SwapHandler godoc
@@ -43,11 +46,13 @@ func SwapHandler(client *grpc.Client) gin.HandlerFunc {
 		}
 
 		grpcReq := &sor.SwapRequest{
-			InputToken:  req.InputToken,
-			OutputToken: req.OutputToken,
-			Amount:      req.Amount,
-			UserAddress: req.UserAddress,
-			SlippageBps: req.SlippageBps,
+			InputToken:      req.InputToken,
+			OutputToken:     req.OutputToken,
+			Amount:          req.Amount,
+			UserAddress:     req.UserAddress,
+			SlippageBps:               req.SlippageBps,
+			RecentBlockhash:           req.RecentBlockhash,
+			PrioritizationFeeLamports: req.PrioritizationFeeLamports,
 		}
 
 		resp, err := client.Swap(c.Request.Context(), grpcReq)
@@ -74,13 +79,13 @@ func SwapHandler(client *grpc.Client) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"tx_hash":             resp.TxHash,
 			"status":              resp.Status,
 			"message":             resp.Message,
 			"route":               resp.Route,
 			"output_amount":       resp.OutputAmount,
 			"human_output_amount": resp.HumanOutputAmount,
 			"routes":              routes,
+			"swapTransaction":     base64.StdEncoding.EncodeToString(resp.Transaction),
 		})
 	}
 }
