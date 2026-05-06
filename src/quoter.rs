@@ -58,7 +58,7 @@ impl Quoter {
 
         for _ in 0..slices {
             let mut best_marginal_out = 0;
-            let mut best_path_idx = 0;
+            let mut best_path_idx = None;
 
             for (idx, path) in paths.iter().enumerate() {
                 let current_alloc = allocations[idx];
@@ -66,20 +66,27 @@ impl Quoter {
                 let out_after = self.simulate_path(path, token_in, current_alloc + slice_amount)?;
                 let marginal = out_after.saturating_sub(out_before);
 
-                // Apply a hop penalty to prioritize shorter paths unless multi-hop is significantly better.
-                // Each hop adds 20bps of "virtual cost" for comparison purposes.
+                if marginal == 0 { continue; }
+
+                // Apply a hop penalty to prioritize shorter paths
                 let hop_penalty_bps = (path.len() as u64) * 20; 
                 let effective_marginal = (marginal as u128 * (10000 - hop_penalty_bps) as u128 / 10000) as u64;
 
                 if effective_marginal > best_marginal_out {
                     best_marginal_out = effective_marginal;
-                    best_path_idx = idx;
+                    best_path_idx = Some(idx);
                 }
             }
 
-            allocations[best_path_idx] += slice_amount;
-            let marginal_out = self.simulate_path(&paths[best_path_idx], token_in, allocations[best_path_idx])?.saturating_sub(self.simulate_path(&paths[best_path_idx], token_in, allocations[best_path_idx] - slice_amount)?);
-            total_out = total_out.saturating_add(marginal_out);
+            if let Some(idx) = best_path_idx {
+                allocations[idx] += slice_amount;
+                let marginal_out = self.simulate_path(&paths[idx], token_in, allocations[idx])?.saturating_sub(self.simulate_path(&paths[idx], token_in, allocations[idx] - slice_amount)?);
+                total_out = total_out.saturating_add(marginal_out);
+            }
+        }
+
+        if total_out == 0 {
+            return Err(anyhow!("No liquid route found (simulated 0 output)"));
         }
 
         // Build route plans
@@ -188,7 +195,6 @@ impl Quoter {
     fn calculate_price_impact(&self, path: &[String], token_in: &str, amount_in: u64) -> Result<f64> {
         let mut ideal_out = amount_in as f64;
         let mut current_token = token_in.to_string();
-
         for pool_id in path {
             let pool = self.cache.get_pool(pool_id).ok_or_else(|| anyhow!("Pool {} not found", pool_id))?;
             let (reserve_in, reserve_out) = if pool.token_a == current_token {
@@ -464,35 +470,18 @@ impl Quoter {
                     None => { warn!("Quoter: Orca pool {} missing pool_vault_b", pool.id); return None; }
                 };
 
-                let mint_a = match Pubkey::from_str(&pool.token_a) {
-                    Ok(p) => p,
-                    Err(e) => { warn!("Quoter: Invalid token_a {}: {}", pool.token_a, e); return None; }
-                };
-                let mint_b = match Pubkey::from_str(&pool.token_b) {
-                    Ok(p) => p,
-                    Err(e) => { warn!("Quoter: Invalid token_b {}: {}", pool.token_b, e); return None; }
-                };
-                
                 // Determine if token_in is token_a
                 let a_to_b = token_in == pool.token_a;
                 let (user_ata_a, user_ata_b) = if a_to_b { (user_ata_in, user_ata_out) } else { (user_ata_out, user_ata_in) };
 
-                // Resolve specific token programs for BOTH mints
+                // Resolve specific token program for token_a (needed for Whirlpool v1 swap accounts)
                 let program_a_str = self.cache.token_programs.get(&pool.token_a)
-                    .map(|p| p.value().clone())
-                    .unwrap_or_else(|| "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA".to_string());
-                let program_b_str = self.cache.token_programs.get(&pool.token_b)
                     .map(|p| p.value().clone())
                     .unwrap_or_else(|| "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA".to_string());
                 let program_a = match Pubkey::from_str(&program_a_str) {
                     Ok(p) => p,
                     Err(_) => { warn!("Quoter: Invalid program_a {}", program_a_str); return None; }
                 };
-                let program_b = match Pubkey::from_str(&program_b_str) {
-                    Ok(p) => p,
-                    Err(_) => { warn!("Quoter: Invalid program_b {}", program_b_str); return None; }
-                };
-                let memo_program = Pubkey::from_str("MemoSq4gqABAXDe96jnzUQrCJEhcqy9197pau8P4Xw").unwrap_or_else(|_| program_id);
 
                 // Derive 3 TickArrays to cover the range (prevents 6036)
                 let (ta0, ta1, ta2) = if let Some(clmm) = &pool.clmm_data {
@@ -613,9 +602,9 @@ impl Quoter {
                     Err(_) => { log::error!("Meteora: Invalid program_out {}", program_out_str); return None; }
                 };
 
-                let (ba0_pub, _) = Pubkey::find_program_address(&[b"bin_array", lb_pair.as_ref(), &(ba0 as i64).to_le_bytes()], &program_id);
-                let (ba1_pub, _) = Pubkey::find_program_address(&[b"bin_array", lb_pair.as_ref(), &(ba1 as i64).to_le_bytes()], &program_id);
-                let (ba2_pub, _) = Pubkey::find_program_address(&[b"bin_array", lb_pair.as_ref(), &(ba2 as i64).to_le_bytes()], &program_id);
+                let (ba0_pub, _) = Pubkey::find_program_address(&[b"bin_array", lb_pair.as_ref(), &(ba0 as i32).to_le_bytes()], &program_id);
+                let (ba1_pub, _) = Pubkey::find_program_address(&[b"bin_array", lb_pair.as_ref(), &(ba1 as i32).to_le_bytes()], &program_id);
+                let (ba2_pub, _) = Pubkey::find_program_address(&[b"bin_array", lb_pair.as_ref(), &(ba2 as i32).to_le_bytes()], &program_id);
                 let (bitmap_ext, _) = Pubkey::find_program_address(&[b"bitmap", lb_pair.as_ref()], &program_id);
                 let (oracle, _) = Pubkey::find_program_address(&[b"oracle", lb_pair.as_ref()], &program_id);
                 let event_authority = match Pubkey::from_str("EVSAoyjP54s7K9Wv7Jt2eB55S3t481S15P9f77fM5T9") {

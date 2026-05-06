@@ -145,9 +145,9 @@ impl GlobalPoolCache {
             ("So11111111111111111111111111111111111111112", "SOL", 9),
             ("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", "USDC", 6),
             ("Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", "USDT", 6),
-            ("mSoLzYSa7mSrib6Pqz9shqZ57n79m1Sjg7rBe39626S", "mSOL", 9),
-            ("JUPyiwrS9fR9S9oiSgYpXG88K6zB42289cTSpmXkSBy", "JUP", 6),
-            ("DezXAZ8z7PnrnRJjz3wXBoRgixqc6HG8J6YW7GZ68m7G", "BONK", 5),
+            ("mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So", "mSOL", 9),
+            ("JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN", "JUP", 6),
+            ("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", "BONK", 5),
             ("HZ1JovNiHvGr2UsFvSxH9N8gJHeK9NBeS4hR3mK9A5X4", "WETH", 8),
         ];
 
