@@ -328,7 +328,7 @@ func (wp *WorkerPool) updatePoolReserves(ctx context.Context, poolData *PoolData
 
 	wp.Redis.HSet(ctx, key, fields)
 	
-	// Broadcast immediately so SOR gets metadata even if reserves haven't changed yet
+	// Broadcast immediately so subscribers get metadata even if reserves haven't changed yet
 	wp.Broadcast(&WorkerUpdate{
 		PoolId:   poolData.Address,
 		TokenA:   poolData.TokenA,

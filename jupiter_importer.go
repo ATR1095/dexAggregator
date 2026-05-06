@@ -216,7 +216,7 @@ func (ji *JupiterImporter) ImportTopPools(ctx context.Context, wp *WorkerPool) e
 			}
 		}
 
-		// 2. Redis Seeding (CRITICAL for SOR)
+		// 2. Redis Seeding (CRITICAL for downstream consumers)
 		key := fmt.Sprintf("pool:%s", id)
 		decA := GetDecimalsFromCache(m.MintA)
 		if decA == 0 { decA = m.DecimalsA }

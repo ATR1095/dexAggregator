@@ -88,7 +88,7 @@ func main() {
 	go runRPCPooling(ctx, xToken, workerPool) // Always run fallback polling
 	go healUnknownSymbolsLoop(ctx, registry)
 
-	// Start gRPC Server for SOR
+	// Start gRPC Server for Price Oracle
 	StartGRPCServer("50051", workerPool, redisClient)
 
 	sigChan := make(chan os.Signal, 1)
